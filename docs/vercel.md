@@ -1,9 +1,28 @@
 # Vercel: Veröffentlichen und Fehlersuche
 
 Stand: 5. November 2026. Diese Datei erklärt, warum die Website trotz erfolgreichem
-Build nicht sichtbar war und welche Einstellungen in Vercel nötig sind.
+Build zunächst nicht sichtbar war, wie sie wieder erreichbar wurde und welche
+Einstellungen in Vercel dauerhaft stimmen müssen.
 
-## Befund der Analyse
+## Aktueller Stand: Website ist online
+
+Nach Übernahme der Änderungen auf den Produktionsbranch `main` hat Vercel ein
+neues Produktionsdeployment erzeugt (Status „Deployment has completed").
+Geprüft und erreichbar:
+
+- `https://hummmelhof.vercel.app/` – Startseite
+- `https://hummmelhof.vercel.app/about-us` – About Us
+- `https://hummmelhof.vercel.app/anmeldung` – Anmeldung
+- `https://hummmelhof.vercel.app/robots.txt` und `/sitemap.xml` mit korrekten
+  `https://hummmelhof.vercel.app/…`-Adressen
+
+Die Ursache war damit keine fehlerhafte Anwendung, sondern eine noch nicht auf
+der Produktionsdomain liegende Veröffentlichung. Die folgenden Einstellungen
+sollten kontrolliert bleiben: bei künftigen Deployments immer auf `main`
+arbeiten und den Deployment-Schutz für die Produktionsdomain deaktiviert
+lassen.
+
+## Befund vor der Behebung
 
 | Prüfung | Ergebnis |
 | --- | --- |
@@ -18,7 +37,9 @@ Quellcode, sondern in der Konfiguration des Vercel-Projekts. Ein 404 der
 Vercel-Plattform auf der Startseite und eine Login-Aufforderung sind typisch für
 eine falsche Domain, einen aktiven Deployment-Schutz oder ein Projekt, das beim
 Import mit falschem Framework/Root-Verzeichnis angelegt wurde. Solche
-Kontoeinstellungen können nicht aus dem Repository heraus geändert werden.
+Kontoeinstellungen können nicht aus dem Repository heraus geändert werden. Der
+entscheidende Schritt war ein frisches Produktionsdeployment auf `main`, nachdem
+die Änderungen übernommen waren – danach wurde die Domain korrekt zugewiesen.
 
 ## Was im Repository dafür geändert wurde
 
@@ -35,10 +56,10 @@ Kontoeinstellungen können nicht aus dem Repository heraus geändert werden.
 
 Projekt in Vercel öffnen (`velocity-crash / hummmelhof`), dann der Reihe nach:
 
-1. **Domains:** Die tatsächlich zugewiesene Adresse steht unter *Settings → Domains*.
-   Nur diese Adresse verwenden. Die im GitHub-Repository hinterlegte Adresse
-   `hummmelhof.vercel.app` liefert aktuell 404 und gehört offenbar nicht zu diesem
-   Projekt – sie ist nicht die Veröffentlichungsadresse.
+1. **Domains:** Die zugewiesene Adresse steht unter *Settings → Domains*. Aktuell
+   ist das `https://hummmelhof.vercel.app`. Nur die dort angezeigte Adresse
+   verwenden; nach dem Hinzufügen einer eigenen Domain gilt entsprechend die
+   neue Adresse.
 2. **Deployment Protection:** *Settings → Deployment Protection → Vercel
    Authentication* auf **Disabled** stellen (oder zumindest für Production
    deaktivieren). Solange der Schutz aktiv ist, sehen Besucher statt der Website
