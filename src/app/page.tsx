@@ -2,6 +2,14 @@ import { Button, Facts, Photo, Invite, LoopGraphic } from "@/components/shared";
 import { images } from "@/config/images";
 import { event } from "@/config/event";
 import { registrationHref } from "@/config/registration";
+import { pageMetadata } from "@/config/seo";
+
+export const metadata = pageMetadata({
+  title: event.name,
+  description: `50 Kilometer, 50 Runden, ein gemeinsamer Lauftag. Am ${event.dateLong} am Hummelhof. Entdecke die Community-Challenge.`,
+  path: "/",
+});
+
 export default function Home() {
   return (
     <>
@@ -44,14 +52,7 @@ export default function Home() {
             priority
           />
           <div className="event-tag">
-            <span>
-              {new Date(event.dateISO + "T12:00:00Z")
-                .toLocaleDateString("de-AT", {
-                  weekday: "long",
-                  timeZone: "UTC",
-                })
-                .toUpperCase()}
-            </span>
+            <span>{event.weekdayLong.toUpperCase()}</span>
             <strong>{event.date.split(".").slice(0, 2).join(" / ")}</strong>
             <span>
               {event.dateISO.slice(0, 4)} · {event.location.toUpperCase()}

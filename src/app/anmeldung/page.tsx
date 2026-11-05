@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { Button } from "@/components/shared";
 import { registration } from "@/config/registration";
 import { event } from "@/config/event";
-export const metadata: Metadata = {
+import { pageMetadata } from "@/config/seo";
+export const metadata = pageMetadata({
   title: "Anmeldung – Sei dabei",
   description: `Alle Informationen zur Anmeldung für die ${event.name} am ${event.dateLong}. Die Anmeldung wird in Kürze freigeschaltet.`,
-};
+  path: "/anmeldung",
+});
 export default function Registration() {
   const ready = Boolean(registration.registrationUrl);
   return (

@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import { Photo, Facts, Invite, LoopGraphic } from "@/components/shared";
 import { images } from "@/config/images";
 import { event } from "@/config/event";
-export const metadata: Metadata = {
+import { pageMetadata } from "@/config/seo";
+export const metadata = pageMetadata({
   title: "About Us – Unsere Geschichte",
   description:
     "Wie aus einem persönlichen 50-Kilometer-Lauf am Hummelhof eine offene Community-Challenge wurde. Unsere Geschichte und die Idee dahinter.",
-};
+  path: "/about-us",
+});
 export default function About() {
   return (
     <>

@@ -280,7 +280,8 @@ p.muted,
 }
 .hero-visual .photo-image {
   aspect-ratio: 3.05;
-  min-height: 260px;
+  /* Keine min-height: In Kombination mit aspect-ratio würde sie eine
+     Mindestbreite erzwingen und auf Tablets Quer-Scrollen erzeugen. */
 }
 .hero-visual figcaption {
   display: none;
@@ -721,6 +722,14 @@ dd {
     font-size: 25px;
   }
 }
+/* Tablet im Hochformat: das Hero-Foto etwas höher zuschneiden, damit es
+   auch bei schmalen Spalten groß genug bleibt. */
+@media (min-width: 701px) and (max-width: 900px) {
+  .hero-visual .photo-image {
+    aspect-ratio: 2.1;
+  }
+}
+
 @media (max-width: 700px) {
   .wrap,
   .header-inner {
