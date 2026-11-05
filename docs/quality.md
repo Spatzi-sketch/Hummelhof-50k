@@ -1,28 +1,79 @@
 # Prüfprotokoll
 
-5. November 2026
+Stand: 5. November 2026, nach der Vercel-Fehlerbehebung.
 
-## Erfolgreich ausgeführt
+## Rahmenbedingungen
 
-- `npm run build`: alle drei Seiten und Icon-Routen statisch generiert, keine Build- oder TypeScript-Fehler.
-- `npm run typecheck`: erfolgreich.
-- `npm test` gegen laufenden Next-Server: alle drei URLs HTTP 200, je ein H1, deutsche Sprache und Meta-Beschreibung vorhanden. 30 interne Seiten-/Link-/Assetziele ohne fehlende Ressourcen. Ehrlich inaktiver Anmeldebereich ohne Formular. Nicht vorhandene URL liefert HTTP 404.
-- `npm audit`: keine bekannten Schwachstellen zum Prüfzeitpunkt.
-- Keine externen Fotodienste, Tracking-Skripte, Formularübermittlung oder Geheimnisse eingebaut.
+- `npm ci`: 38 Pakete, keine Schwachstellen gemeldet.
+- `npm run typecheck`: erfolgreich, keine TypeScript-Fehler.
+- `npm run build`: Next.js 16.4.5, 9 statisch generierte Routen, keine Fehler.
+  Erzeugt: `/`, `/about-us`, `/anmeldung`, `/_not-found`, `/icon.png`,
+  `/apple-icon.png`, `/robots.txt`, `/sitemap.xml`.
+- Zusätzlicher Testbuild mit `NEXT_PUBLIC_SITE_URL=hummmelhof.vercel.app`
+  (ohne Protokoll): Build läuft, Sitemap enthält korrekte `https://`-Adressen.
 
-## Implementiert, aber nicht als visuell bestanden ausweisen
+## Produktionsserver (`next start`)
 
-- Breakpoints bei 700 und 1100 px, zusätzliche Breitbildanpassung.
-- Mobile Navigation mit aria-expanded, eindeutiger Beschriftung, Schließen bei Navigation und Escape sowie Fokus auf dem Menüschalter.
-- Sichtbare Fokuszustände, Skip-Link, semantische Navigation, deutscher Dokumenttitel und passende Bildbeschreibungen.
-- Reduced Motion, feste Bildformate gegen Layoutverschiebungen, objektbasierter Bildausschnitt.
+`npm test` gegen den laufenden Produktionsserver: alle drei Seiten HTTP 200, je
+ein H1, `lang="de"`, Meta-Beschreibung, Canonical, Open Graph, Logo vorhanden,
+23 interne Seiten-/Link-/Assetziele alle HTTP 200, `robots.txt` mit
+Sitemap-Verweis, `sitemap.xml` mit allen drei Seiten, unbekannte URL → 404,
+Anmeldeseite ohne `<form>` und mit dem Hinweis auf die noch nicht
+freigeschaltete Anmeldung.
 
-Der reguläre Playwright-Browserdownload scheiterte am eingeschränkten Netzwerk. Ein alternativ über npm verfügbarer Chromium konnte wegen fehlendem `libnspr4.so` nicht starten. Temporäre Browserabhängigkeiten wurden wieder entfernt. Deshalb keine behaupteten Screenshots, visuellen Tests oder erfolgreich geprüfte Browserkonsole.
+Zusätzlich direkt geprüft: `/icon.png` (16 KB), `/apple-icon.png` (44 KB),
+`/favicon.ico` (16 KB), `/images/logo.png`, `/images/hero.svg`,
+`/robots.txt`, `/sitemap.xml`.
+
+## Echte Browserprüfung
+
+Ein über npm bereitgestellter Headless-Chromium wurde mit den mitgelieferten
+Systembibliotheken gestartet. Geprüft wurden alle drei Seiten bei **375, 768,
+1440 und 1920 px** Breite:
+
+- kein horizontales Scrollen, keine über den Rand ragenden Elemente,
+- alle Bilder geladen (`naturalWidth > 0`), keine fehlenden Ressourcen,
+- keine JavaScript-Fehler und keine Fehler in der Browserkonsole,
+- Seitentitel und H1 auf allen Seiten korrekt,
+- mobile Navigation: öffnet mit `aria-expanded="true"`, Link führt zu
+  `/about-us`, Menü schließt nach der Navigation und auf Escape.
+
+Screenshots aller Ansichten wurden während der Prüfung erzeugt und danach
+wieder aus dem Repository entfernt (keine generierten Artefakte in Git).
+
+**Gefunden und behoben:** Bei 701–900 px Breite erzeugte die Kombination aus
+`aspect-ratio` und `min-height: 260px` am Hero-Bild eine Mindestbreite von
+793 px und damit einen horizontalen Scrollbalken. Die `min-height` wurde
+entfernt und für Tablet-Hochformat ein angepasster Bildzuschnitt ergänzt.
+Danach alle vier Breiten erneut fehlerfrei geprüft.
+
+**Geprüft, aber nicht als Fehler gewertet:** Lazy geladene Bilder außerhalb des
+sichtbaren Bereichs haben vor dem Scrollen noch keine Abmessungen. Nach dem
+Scrollen bzw. nach explizitem Laden sind alle Bilder vollständig vorhanden.
+
+## Implementierte, aber nicht automatisiert gemessene Punkte
+
+- Breakpoints bei 700, 900 (Hero-Zuschnitt) und 1100 px, dazu Breitbild ab 1600 px.
+- Sichtbare Fokuszustände, Skip-Link, semantische Navigation, deutscher
+  Dokumenttitel, beschreibende Alt-Texte, `prefers-reduced-motion`.
+- Feste Bildformate gegen Layoutverschiebungen, `object-fit: cover` mit
+  zentral einstellbarer `position`.
+- Kontraste und Lesbarkeit wurden visuell anhand der Screenshots beurteilt,
+  nicht mit einem automatisierten WCAG-Audit gemessen.
+
+## Vercel
+
+Die Vercel-Deployments auf `main` melden „Deployment has completed". Die
+Produktionsdomain `hummmelhof.vercel.app` liefert dennoch `404 NOT_FOUND`, die
+Preview-Adresse des Projekts eine Vercel-Anmeldeseite. Ursache und die nötigen
+Dashboard-Einstellungen sind in [vercel.md](vercel.md) dokumentiert. Ein
+erneutes Deployment nach Übernahme dieser Änderungen auf `main` ist erforderlich.
 
 ## Vor öffentlicher Freigabe
 
-Alle drei Seiten bei 375, 768 und 1440 px in der Live-Vorschau kontrollieren: keine Überlappungen oder horizontalen Scrollbalken, passende Fotoausschnitte, lesbare Texte und Kontraste. Navigation per Maus, Touch, Tab und Escape prüfen. Anmeldung muss noch als inaktiv erscheinen. Bei echtem Formular dessen Anbieter-/Datenschutz- und Einbettungsanforderungen gesondert kontrollieren. Veranstalter-/rechtliche Informationen ergänzen, soweit erforderlich.
-
-## Erneute Prüfung und GitHub-Übertragung
-
-Produktionsbuild nach Ergänzung von `next.config.ts` und Node.js-22-Vorgabe erneut erfolgreich. Die HTTP-Prüfung zusätzlich gegen `next start` auf Port 3001 ausgeführt: alle drei Seiten, 20 Produktions-Link-/Assetziele und 404 erfolgreich. TypeScript und `git diff --check` erfolgreich. Der frühere Test mit 30 Ressourcen bezog sich auf den Entwicklungsserver; im Produktionsbuild werden weniger separate Ressourcen geladen.
+- Echte Fotos, Bildunterschriften und Alt-Texte ersetzen.
+- Anmelde-URL ergänzen oder bewusst inaktiv lassen.
+- Veranstalter-/Kontaktangaben sowie Impressum und Datenschutzhinweise prüfen;
+  hier wurden keine Fantasiedaten eingesetzt.
+- Bei einem späteren externen Formularanbieter Datenschutz, Cookies,
+  Barrierefreiheit und iframe-Höhe gesondert kontrollieren.
