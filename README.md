@@ -174,11 +174,15 @@ scheinbar funktionierendes Formular eingebaut.
    Für eine erneute Veröffentlichung ohne Codeänderung: in Vercel
    **Deployments → ⋯ → Redeploy**.
 
-> **Wichtig:** Die im GitHub-Repository eingetragene Adresse
-> `https://hummmelhof.vercel.app` liefert aktuell `404 NOT_FOUND`. Das ist eine
-> Vercel-Kontoeinstellung, kein Codefehler. Die vollständige Analyse, alle
-> nötigen Dashboard-Einstellungen und eine Tabelle typischer Fehlerbilder
-> stehen in **[docs/vercel.md](docs/vercel.md)**.
+> **Aktueller Stand (5. November 2026):** Nach dem Merge auf `main` ist die
+> Website unter **`https://hummmelhof.vercel.app`** online; alle drei Seiten,
+> `robots.txt` und `sitemap.xml` wurden live geprüft. Vorher lieferte diese
+> Adresse `404 NOT_FOUND`, weil kein aktuelles Produktionsdeployment auf `main`
+> lag – das war eine Vercel-Einstellung, kein Codefehler. Damit das so bleibt:
+> Änderungen immer auf `main` übernehmen und den Deployment-Schutz für die
+> Produktionsdomain deaktiviert lassen. Die vollständige Analyse, alle nötigen
+> Dashboard-Einstellungen und eine Tabelle typischer Fehlerbilder stehen in
+> **[docs/vercel.md](docs/vercel.md)**.
 
 Für Social-Metadaten wird die Vercel-Produktionsdomain automatisch erkannt. Bei
 eigener Domain `NEXT_PUBLIC_SITE_URL` auf die vollständige `https://`-Adresse

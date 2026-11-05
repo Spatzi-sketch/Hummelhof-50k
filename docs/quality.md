@@ -63,11 +63,14 @@ Scrollen bzw. nach explizitem Laden sind alle Bilder vollständig vorhanden.
 
 ## Vercel
 
-Die Vercel-Deployments auf `main` melden „Deployment has completed". Die
-Produktionsdomain `hummmelhof.vercel.app` liefert dennoch `404 NOT_FOUND`, die
-Preview-Adresse des Projekts eine Vercel-Anmeldeseite. Ursache und die nötigen
-Dashboard-Einstellungen sind in [vercel.md](vercel.md) dokumentiert. Ein
-erneutes Deployment nach Übernahme dieser Änderungen auf `main` ist erforderlich.
+Vor der Behebung meldeten die Vercel-Deployments zwar „Deployment has completed",
+die Produktionsdomain `hummmelhof.vercel.app` lieferte aber `404 NOT_FOUND` und
+die Preview-Adresse eine Vercel-Anmeldeseite. Nach Übernahme der Änderungen auf
+`main` wurde ein neues Produktionsdeployment erzeugt und live geprüft: Startseite,
+`/about-us`, `/anmeldung`, `/robots.txt` und `/sitemap.xml` sind erreichbar, die
+Sitemap enthält korrekte `https://hummmelhof.vercel.app/…`-Adressen. Ursache und
+die dauerhaft nötigen Dashboard-Einstellungen sind in [vercel.md](vercel.md)
+dokumentiert.
 
 ## Vor öffentlicher Freigabe
 
