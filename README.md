@@ -180,9 +180,10 @@ scheinbar funktionierendes Formular eingebaut.
    Für eine erneute Veröffentlichung ohne Codeänderung: in Vercel
    **Deployments → ⋯ → Redeploy**.
 
-> **Aktueller Stand (5. November 2026):** Nach dem Merge auf `main` ist die
+> **Aktueller Stand (6. November 2026):** Nach dem Merge auf `main` ist die
 > Website unter **`https://hummmelhof.vercel.app`** online; alle drei Seiten,
-> `robots.txt` und `sitemap.xml` wurden live geprüft. Vorher lieferte diese
+> `robots.txt` und `sitemap.xml` wurden live geprüft. Das letzte Deployment
+> enthält den korrigierten Eventnamen und die acht echten Fotos. Vorher lieferte diese
 > Adresse `404 NOT_FOUND`, weil kein aktuelles Produktionsdeployment auf `main`
 > lag – das war eine Vercel-Einstellung, kein Codefehler. Damit das so bleibt:
 > Änderungen immer auf `main` übernehmen und den Deployment-Schutz für die

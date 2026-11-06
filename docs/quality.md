@@ -86,8 +86,10 @@ die Preview-Adresse eine Vercel-Anmeldeseite. Nach Übernahme der Änderungen au
 `/about-us`, `/anmeldung`, `/robots.txt` und `/sitemap.xml` sind erreichbar, die
 Sitemap enthält korrekte `https://hummmelhof.vercel.app/…`-Adressen. Ursache und
 die dauerhaft nötigen Dashboard-Einstellungen sind in [vercel.md](vercel.md)
-dokumentiert. Für die hier beschriebenen Änderungen muss erneut auf `main`
-übernommen werden.
+dokumentiert. Auch die hier beschriebenen Änderungen wurden am 6. November 2026
+über PR #4 auf `main` übernommen: Vercel meldete „Deployment has completed", und
+Startseite, About Us und Anmeldung wurden live mit dem korrigierten Eventnamen
+und den acht Fotos geprüft.
 
 ## Vor öffentlicher Freigabe
 
