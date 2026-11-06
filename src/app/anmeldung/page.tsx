@@ -72,7 +72,7 @@ export default function Registration() {
           <p>
             {ready
               ? "Hier kannst du dich für den gemeinsamen Lauftag anmelden."
-              : "Hier entsteht die Anmeldung für die 50 Loop Sulmlof Challenge. Sobald das Formular bereit ist, findest du es an dieser Stelle."}
+              : `Hier entsteht die Anmeldung für die ${event.name}. Sobald das Formular bereit ist, findest du es an dieser Stelle.`}
           </p>
           {ready ? (
             registration.mode === "embed" ? (

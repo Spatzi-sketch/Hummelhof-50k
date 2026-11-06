@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { images } from "@/config/images";
+import { event } from "@/config/event";
 import { registrationHref } from "@/config/registration";
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -35,7 +36,7 @@ export default function Header() {
           />
           <span>
             HUMMELHOF <b>50K</b>
-            <small>50 LOOP SULMLOF CHALLENGE</small>
+            <small>{event.name.toUpperCase()}</small>
           </span>
         </Link>
         <button

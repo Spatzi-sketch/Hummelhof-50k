@@ -1,6 +1,6 @@
 # Hummelhof 50K
 
-Deutschsprachige Website für die **50 Loop Sulmlof Challenge** am **5. Dezember 2026**.
+Deutschsprachige Website für die **50 Loop Hummelhof Challenge** am **5. Dezember 2026**.
 Drei eigene Seiten, kein Backend, keine Datenbank, kein Tracking. Das
 bereitgestellte Eventlogo ist als Logo **und** als Favicon eingebunden.
 
@@ -38,7 +38,7 @@ Hummelhof-50k/
 ├── .nvmrc                     Node.js 22 für lokale Entwicklung
 ├── next.config.mjs            Next.js-Konfiguration (reines JavaScript)
 ├── public/
-│   ├── images/                ALLE Bilder (Logo + Fotoplatzhalter / spätere Fotos)
+│   ├── images/                ALLE Bilder (Logo + 8 komprimierte WebP-Fotos)
 │   └── favicon.ico            Favicon für Browser, die /favicon.ico anfragen
 ├── src/
 │   ├── app/
@@ -73,43 +73,47 @@ Hummelhof-50k/
 ## 3. Eigene Fotos hochladen und austauschen
 
 **Alle Bildpfade stehen ausschließlich in `src/config/images.ts`.** In keiner
-Komponente ist ein Bildpfad fest eingeschrieben.
+Komponente ist ein Bildpfad fest eingeschrieben. Eingebunden sind aktuell die
+acht gelieferten Fotos als komprimierte WebP-Dateien.
 
 1. In GitHub den Ordner **`public/images/`** öffnen → **Add file → Upload files**.
-2. Foto als JPG oder WebP hochladen, z. B. `hero.jpg`. Möglichst unter 500 KB;
-   für ein großes Hero-Foto maximal ca. 1 MB. Keine 10-MB-Handy-Originale.
-3. In **`src/config/images.ts`** beim gewünschten Motiv drei Dinge ändern:
-   `src` (neuer Dateiname), `alt` (echte Bildbeschreibung) und
-   `placeholder: false` (sonst bleibt die Platzhalter-Beschriftung sichtbar).
-4. Optional `position` anpassen, z. B. `'center 35%'` oder `'60% center'`.
+2. Foto als JPG oder WebP hochladen. Die Originale waren 4032 × 3024 px und
+   5–7 MB groß; eingebunden sind sie mit 1800 px Breite und ca. 240–790 KB.
+   Bitte keine 10-MB-Handy-Originale hochladen – Next.js optimiert die
+   Auslieferung zwar zusätzlich, ein moderates Ausgangsformat bleibt aber sinnvoll.
+3. In **`src/config/images.ts`** beim gewünschten Motiv `src` (neuer Dateiname)
+   und `alt` (echte Bildbeschreibung) ändern.
+4. Optional `position` anpassen, z. B. `'center 35%'` oder `'40% center'`.
    Damit verschiebt sich der Zuschnitt, ohne dass das Foto verzerrt wird.
-5. Bei Bedarf die Bildunterschrift auf der jeweiligen Seite anpassen. Sie
-   beschreibt aktuell bewusst den Platzhalter.
+5. Bei Bedarf die Bildunterschrift auf der jeweiligen Seite anpassen.
 
 Beispiel:
 
 ```ts
 hero: {
   src: '/images/hero.jpg',
-  alt: 'Waldweg am Hummelhof an einem kühlen Wintermorgen',
-  position: 'center 40%',
-  placeholder: false,
+  alt: 'Beschreibe knapp, was auf deinem Foto tatsächlich zu sehen ist',
+  position: 'center 55%',
 },
 ```
 
-| Schlüssel / aktuelle Datei | erscheint auf | Empfohlenes Motiv | Format | Auflösung |
+| Schlüssel / Datei | erscheint auf | Motiv | Zuschnitt | Empfohlene Auflösung |
 | --- | --- | --- | --- | --- |
-| `hero` / `hero.svg` | Home, großes Einstiegsbild | Ruhiger Waldweg oder Lauf am Hummelhof | Desktop ca. 3:1, mobil ca. 4:3 | 2400 × 1600 px, Motiv mittig |
-| `location` / `event-location.svg` | Home, Community-Abschnitt | Die tatsächliche Runde / der Weg | ca. 1:1 | 1400 × 1400 px |
-| `detail` / `running-detail.svg` | Home, zweites Galeriebild | Schuhe, Schritte, kleines Laufdetail | Desktop ca. 5:4, mobil Hochformat | 1200 × 1500 px |
-| `community` / `community.svg` | Home, Galerie; About Us | Echte Läuferinnen und Läufer, mit Einverständnis | ca. 3:2 bis Hochformat | 1800 × 1600 px mit Beschnittreserve |
-| `about` / `about-event.svg` | About Us, Einstieg | Persönliches Foto vom Lauf | Desktop ca. 2,7:1, mobil ca. 4:3 | 2400 × 1600 px |
+| `hero` / `hero.webp` | Home, großes Einstiegsbild | Geschwungener Weg mit Bank und Bäumen | Desktop 3:1, Tablet 2,1:1, mobil 1,35:1 | 1800–2400 × 1350–1800 px |
+| `location` / `location.webp` | Home, Community-Abschnitt | Weg mit Böschung und Spielanlage | ca. 1,05:1 | 1800 × 1350 px |
+| `community` / `community.webp` | Home, Galerie; About Us | Sonne und Nebel über Wiese und Weg | Galerie 1,6:1 / About 1,05:1 | 1800 × 1350 px |
+| `sky` / `sky.webp` | Home, Galerie | Himmel mit Wolken über Baumkronen | ca. 1,05:1 | 1800 × 1350 px |
+| `trail` / `trail.webp` | Home, Galerie | Waldweg im Gegenlicht | ca. 1,3:1 | 1800 × 1350 px |
+| `grove` / `grove.webp` | Home, Galerie | Sonne zwischen Laub- und Nadelbäumen | ca. 0,9:1 (Hochformat) | 1800 × 1350 px mit Beschnittreserve |
+| `canopy` / `canopy.webp` | Home, Galerie, breiter Abschluss | Nebliger Weg mit Sonnenstrahlen | ca. 2,5:1 | 1800 × 1350 px |
+| `about` / `about.webp` | About Us, Einstieg | Geschwungener Weg, zweiter Ausschnitt | 2,7:1 | 1800–2400 × 1350–1800 px |
 | `logo` / `logo.png` | Header, Footer, Social-Bild | Bereitgestelltes Eventlogo (unverändert) | 1:1 | 500 × 500 px |
 
-Die fünf SVGs sind kleine, selbst erstellte **Illustrationen**, keine Fotos und
-keine Darstellung der echten Strecke. Sie sind im Layout als
-„FOTOPLATZHALTER · ILLUSTRATION" beschriftet. Nutze nur Bilder, an denen du die
-Rechte hast, und hole für erkennbare Personen eine Einwilligung ein.
+Alle Fotos werden über `next/image` responsiv ausgeliefert. `object-fit: cover`
+zusammen mit der zentralen `position` verhindert Verzerrungen und hält das
+wichtige Motiv im Bild. Alt-Texte beschreiben nur, was tatsächlich zu sehen ist.
+Nutze nur Bilder, an denen du die Rechte hast, und hole für erkennbare Personen
+eine Einwilligung ein.
 
 **Logo/Favicon austauschen:** `public/images/logo.png` ersetzen (gleicher
 Dateiname = kein Code nötig). Für die Favicons `src/app/icon.png`,
@@ -120,8 +124,10 @@ Die aktuellen Favicons sind aus dem gelieferten Logo verkleinert und optimiert.
 
 ## 4. Texte und Eventinformationen ändern
 
-- **Fakten (Datum, Ort, 50 km, 50 Runden, 1 km, 5:36 h):**
-  `src/config/event.ts`. Diese Werte erscheinen automatisch auf allen Seiten.
+- **Eventname und Fakten (Datum, Ort, 50 km, 50 Runden, 1 km, 5:36 h):**
+  `src/config/event.ts`. Diese Werte erscheinen automatisch auf allen Seiten –
+  auch in Seitentiteln, Header-Unterzeile, Hero, Footer und Sitemap. Der Name
+  lautet aktuell **50 Loop Hummelhof Challenge**, Kurzform **Hummelhof 50K**.
 - **Erzähltexte:** `src/app/page.tsx`, `src/app/about-us/page.tsx`,
   `src/app/anmeldung/page.tsx`. Nur den sichtbaren deutschen Text zwischen den
   Tags ändern.
@@ -212,8 +218,6 @@ die 404-Seite.
 
 ## 8. Was aktuell Platzhalter bzw. offen ist
 
-- Fünf **Fotoplatzhalter** (lokale Illustrationen), beschriftet und mit
-  Platzhalter-Alt-Texten. Das echte Bildmaterial wurde noch nicht geliefert.
 - **Anmeldung:** noch keine echte URL, daher Informationsseite mit
   „Die Anmeldung wird in Kürze freigeschaltet." Kein Formular.
 - **Genaue Startzeit, Veranstalter-/Kontaktangaben, Impressum/Datenschutz**
@@ -227,11 +231,12 @@ die 404-Seite.
 
 ## 9. Qualitätsstand
 
-Produktionsbuild, TypeScript und HTTP-Tests sind erfolgreich. Zusätzlich wurden
-alle drei Seiten im echten Browser bei **375, 768, 1440 und 1920 px** geprüft:
-keine horizontalen Scrollbalken, keine überstehenden Elemente, alle Bilder
-geladen, keine Konsolenfehler. Die mobile Navigation öffnet, navigiert korrekt,
-schließt nach Klick und reagiert auf Escape. Details und frühere Prüfschritte:
+Produktionsbuild, TypeScript und HTTP-Tests sind erfolgreich; alle acht Fotos
+werden dabei auf Einbindung und Erreichbarkeit geprüft. Zusätzlich wurden alle
+drei Seiten im echten Browser bei **375, 768, 1440 und 1920 px** geprüft: keine
+horizontalen Scrollbalken, keine überstehenden Elemente, alle Bilder geladen,
+keine Platzhalter-Labels, keine Konsolenfehler. Die mobile Navigation öffnet,
+navigiert korrekt, schließt nach Klick und reagiert auf Escape. Details:
 [docs/quality.md](docs/quality.md).
 
 Gestaltungsrecherche und eigenständiges Designkonzept:

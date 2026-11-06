@@ -16,7 +16,7 @@ const weekdayLong =
   weekdayNames[new Date(`${dateISO}T12:00:00Z`).getUTCDay()];
 
 export const event = {
-  name: "50 Loop Sulmlof Challenge",
+  name: "50 Loop Hummelhof Challenge",
   shortName: "Hummelhof 50K",
   date: "05.12.2026",
   dateLong: "5. Dezember 2026",

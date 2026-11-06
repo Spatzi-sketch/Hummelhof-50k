@@ -41,11 +41,6 @@ export function Photo({
           style={{ objectFit: "cover", objectPosition: image.position }}
           priority={priority}
         />
-        {image.placeholder && (
-          <span className="placeholder-label">
-            FOTOPLATZHALTER · ILLUSTRATION
-          </span>
-        )}
       </div>
       <figcaption>{caption}</figcaption>
     </figure>
