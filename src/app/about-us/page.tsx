@@ -26,7 +26,7 @@ export default function About() {
       <div className="wrap">
         <Photo
           image={images.about}
-          caption="01 / Platz für ein persönliches Foto hinter der Challenge"
+          caption="01 / Der geschwungene Weg"
           className="wide-photo"
           priority
         />
@@ -107,7 +107,7 @@ export default function About() {
         </div>
         <Photo
           image={images.community}
-          caption="02 / Hier kommen später die Menschen hinter dem Lauf ins Bild"
+          caption="02 / Sonnenlicht auf der Wiese"
           className="portrait"
         />
       </section>

@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 
 const base = process.env.TEST_URL || "http://localhost:3000";
+const photoFiles = [
+  "hero.webp",
+  "about.webp",
+  "location.webp",
+  "community.webp",
+  "sky.webp",
+  "trail.webp",
+  "grove.webp",
+  "canopy.webp",
+];
 const targets = new Set([
   "/",
   "/about-us",
@@ -10,18 +20,29 @@ const targets = new Set([
   "/favicon.ico",
   "/robots.txt",
   "/sitemap.xml",
+  ...photoFiles.map((f) => `/images/${f}`),
 ]);
 
+let allHtml = "";
 for (const route of ["/", "/about-us", "/anmeldung"]) {
   const response = await fetch(base + route);
   assert.equal(response.status, 200, `Seite: ${route}`);
   const html = await response.text();
+  allHtml += html;
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1, `Ein H1: ${route}`);
   assert.ok(html.includes('lang="de"'), `Sprache: ${route}`);
   assert.ok(html.includes('name="description"'), `Beschreibung: ${route}`);
   assert.ok(html.includes('rel="canonical"'), `Canonical: ${route}`);
   assert.ok(html.includes('property="og:title"'), `Open Graph: ${route}`);
   assert.ok(html.includes("/images/logo.png"), `Logo: ${route}`);
+  assert.ok(
+    !html.toLowerCase().includes("sulmlof"),
+    `Alter Eventname auf ${route}`,
+  );
+  assert.ok(
+    !html.includes("FOTOPLATZHALTER"),
+    `Platzhalter-Label auf ${route}`,
+  );
 
   // Interne href-/src-Ziele einsammeln und später auf 200 prüfen.
   for (const match of html.matchAll(/(?:href|src)="(\/[^"<>]*)"/g)) {
@@ -38,6 +59,11 @@ for (const route of ["/", "/about-us", "/anmeldung"]) {
   }
   console.log(`PASS Seite und Metadaten ${route}`);
 }
+
+for (const file of photoFiles) {
+  assert.ok(allHtml.includes(file), `Foto eingebunden: ${file}`);
+}
+console.log(`PASS alle ${photoFiles.length} Eventfotos auf den Seiten verwendet`);
 
 for (const target of targets) {
   const response = await fetch(base + target);

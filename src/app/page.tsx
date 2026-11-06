@@ -48,7 +48,7 @@ export default function Home() {
         <div className="hero-visual">
           <Photo
             image={images.hero}
-            caption="01 / Platz für deinen Blick auf den Hummelhof"
+            caption="01 / Ein Weg durch den Wald"
             priority
           />
           <div className="event-tag">
@@ -98,7 +98,7 @@ export default function Home() {
         <div className="wrap split">
           <Photo
             image={images.location}
-            caption="02 / Hier bekommt die Runde ihr Gesicht"
+            caption="02 / Licht auf dem Weg"
             className="portrait"
           />
           <div>
@@ -127,7 +127,7 @@ export default function Home() {
       <section className="section wrap">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">03 / PLATZ FÜR ECHTE MOMENTE</p>
+            <p className="eyebrow">03 / WEGE, BÄUME, LICHT</p>
             <h2>
               Draußen. In Bewegung.
               <br />
@@ -135,16 +135,22 @@ export default function Home() {
             </h2>
           </div>
           <p>
-            Hier ist Platz für unsere Strecke, kleine Laufmomente und die
-            Menschen dahinter. Bald mit echten Fotos.
+            Wege, Bäume und das Licht zwischen ihren Kronen. Eindrücke für
+            unseren gemeinsamen Lauftag im Winter.
           </p>
         </div>
         <div className="gallery">
-          <Photo image={images.community} caption="03 / Für die Community" />
           <Photo
-            image={images.detail}
-            caption="04 / Für jeden einzelnen Schritt"
+            image={images.community}
+            caption="03 / Sonne zwischen den Bäumen"
           />
+          <Photo image={images.sky} caption="04 / Blick nach oben" />
+          <Photo
+            image={images.trail}
+            caption="05 / Der Weg im Gegenlicht"
+          />
+          <Photo image={images.grove} caption="06 / Schatten und Licht" />
+          <Photo image={images.canopy} caption="07 / Der Weg voraus" />
         </div>
       </section>
       <section className="story-teaser wrap">
