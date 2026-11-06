@@ -1,6 +1,6 @@
 # Vercel: Veröffentlichen und Fehlersuche
 
-Stand: 5. November 2026. Diese Datei erklärt, warum die Website trotz erfolgreichem
+Stand: 6. November 2026. Diese Datei erklärt, warum die Website trotz erfolgreichem
 Build zunächst nicht sichtbar war, wie sie wieder erreichbar wurde und welche
 Einstellungen in Vercel dauerhaft stimmen müssen.
 
@@ -15,6 +15,12 @@ Geprüft und erreichbar:
 - `https://hummmelhof.vercel.app/anmeldung` – Anmeldung
 - `https://hummmelhof.vercel.app/robots.txt` und `/sitemap.xml` mit korrekten
   `https://hummmelhof.vercel.app/…`-Adressen
+
+Am 6. November 2026 wurde ein weiteres Produktionsdeployment nach dem Merge von
+PR #4 ausgelöst (korrigierter Eventname, acht echte Fotos). Der GitHub-Status
+lautete erneut „Deployment has completed"; alle drei Seiten liefern seither den
+neuen Namen und die WebP-Bilder aus. Das Vorgehen bei jedem künftigen Deployment
+bleibt gleich: Änderung auf `main` übernehmen, Status abwarten, Seiten live prüfen.
 
 Die Ursache war damit keine fehlerhafte Anwendung, sondern eine noch nicht auf
 der Produktionsdomain liegende Veröffentlichung. Die folgenden Einstellungen
