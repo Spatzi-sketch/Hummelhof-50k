@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import ConsentSettingsButton from "@/components/ConsentSettingsButton";
 import { images, type EventImage } from "@/config/images";
 import { event } from "@/config/event";
 import { registrationHref } from "@/config/registration";
@@ -113,6 +114,7 @@ export function Footer() {
         <span>
           © {new Date().getFullYear()} {event.name}
         </span>
+        <ConsentSettingsButton />
         <span>Mit Laufbegeisterung am Hummelhof.</span>
       </div>
     </footer>

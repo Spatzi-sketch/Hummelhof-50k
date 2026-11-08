@@ -1,10 +1,11 @@
 import { Button } from "@/components/shared";
+import RegistrationEmbed from "@/components/RegistrationEmbed";
 import { registration } from "@/config/registration";
 import { event } from "@/config/event";
 import { pageMetadata } from "@/config/seo";
 export const metadata = pageMetadata({
   title: "Anmeldung – Sei dabei",
-  description: `Alle Informationen zur Anmeldung für die ${event.name} am ${event.dateLong}. Die Anmeldung wird in Kürze freigeschaltet.`,
+  description: `Jetzt für die ${event.name} am ${event.dateLong} anmelden. Das Anmeldeformular und alle Eckdaten findest du hier.`,
   path: "/anmeldung",
 });
 export default function Registration() {
@@ -52,8 +53,8 @@ export default function Registration() {
             </div>
           </dl>
           <p className="muted">
-            Die genaue Startzeit und weitere organisatorische Informationen
-            folgen. Hier findest du vorerst alle bereits bestätigten Eckdaten.
+            Alle bestätigten Eckdaten auf einen Blick. Weitere Angaben zum
+            Ablauf stehen direkt im Anmeldeformular.
           </p>
         </aside>
         <div className="registration-panel" id="anmeldebereich">
@@ -71,18 +72,19 @@ export default function Registration() {
           </h2>
           <p>
             {ready
-              ? "Hier kannst du dich für den gemeinsamen Lauftag anmelden."
+              ? `Melde dich hier für den gemeinsamen Lauftag an. Das Formular wird von ${registration.provider} bereitgestellt und erst nach deiner Zustimmung geladen.`
               : `Hier entsteht die Anmeldung für die ${event.name}. Sobald das Formular bereit ist, findest du es an dieser Stelle.`}
           </p>
           {ready ? (
             registration.mode === "embed" ? (
-              <iframe
-                className="registration-frame"
-                src={registration.registrationUrl}
-                title="Anmeldeformular für den Hummelhof 50K"
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
+              <>
+                <RegistrationEmbed />
+                <div className="registration-note">
+                  Das Formular wird von {registration.provider} betrieben. Deine
+                  Auswahl kannst du jederzeit über „Datenschutz-Einstellungen“
+                  im Footer ändern.
+                </div>
+              </>
             ) : (
               <Button href={registration.registrationUrl}>
                 Zum Anmeldeformular

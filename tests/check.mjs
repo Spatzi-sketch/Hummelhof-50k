@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 
 const base = process.env.TEST_URL || "http://localhost:3000";
 const photoFiles = [
@@ -11,6 +12,18 @@ const photoFiles = [
   "grove.webp",
   "canopy.webp",
 ];
+
+// Die Anmelde-URL kommt aus der zentralen Konfiguration; der Test liest sie
+// dort aus, damit eine Änderung in registration.ts automatisch mitgeprüft wird.
+const registrationConfig = fs.readFileSync(
+  new URL("../src/config/registration.ts", import.meta.url),
+  "utf8",
+);
+const urlMatch = registrationConfig.match(/registrationUrl:\s*"([^"]+)"/);
+assert.ok(urlMatch, "Anmelde-URL in src/config/registration.ts");
+const formUrl = urlMatch[1];
+assert.ok(formUrl.startsWith("https://"), "Anmelde-URL verschlüsselt");
+
 const targets = new Set([
   "/",
   "/about-us",
@@ -43,6 +56,10 @@ for (const route of ["/", "/about-us", "/anmeldung"]) {
     !html.includes("FOTOPLATZHALTER"),
     `Platzhalter-Label auf ${route}`,
   );
+  assert.ok(
+    html.includes("Datenschutz-Einstellungen"),
+    `Zustimmung jederzeit änderbar: ${route}`,
+  );
 
   // Interne href-/src-Ziele einsammeln und später auf 200 prüfen.
   for (const match of html.matchAll(/(?:href|src)="(\/[^"<>]*)"/g)) {
@@ -54,11 +71,24 @@ for (const route of ["/", "/about-us", "/anmeldung"]) {
     assert.ok(html.includes("SAMSTAG"), "Wochentag im Hero");
   }
   if (route === "/anmeldung") {
-    assert.ok(html.includes("Die Anmeldung wird in Kürze freigeschaltet."));
-    assert.ok(!html.includes("<form"), "Kein vorgetäuschtes Formular");
+    assert.ok(html.includes(formUrl), "Echtes Formular verlinkt");
+    assert.ok(
+      !html.includes("Die Anmeldung wird in Kürze freigeschaltet."),
+      "Alter Platzhaltertext entfernt",
+    );
+    assert.ok(!html.includes("<form"), "Kein eigenes Formular im HTML");
+    assert.ok(
+      !html.includes("<iframe"),
+      "iframe erst nach Zustimmung, nicht im HTML",
+    );
+    assert.ok(
+      html.includes("Das Formular ist noch ausgeblendet."),
+      "Sperre ohne Zustimmung sichtbar",
+    );
   }
   console.log(`PASS Seite und Metadaten ${route}`);
 }
+console.log("PASS Anmeldung: echte URL, Zustimmungssperre, kein Scheinformular");
 
 for (const file of photoFiles) {
   assert.ok(allHtml.includes(file), `Foto eingebunden: ${file}`);
