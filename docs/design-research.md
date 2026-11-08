@@ -4,7 +4,10 @@
 > SVG-Platzhalter wurden durch acht vom Veranstalter gelieferte Fotos ersetzt.
 > Die zentrale Bildkonfiguration, die bewusst kuratierte Anordnung und das
 > Prinzip „Text steht außerhalb des Fotos" blieben unverändert. Die Galerie
-> wurde dafür von zwei auf fünf Bilder erweitert.
+> wurde dafür von zwei auf fünf Bilder erweitert. Der später ergänzte
+> Zustimmungshinweis folgt denselben Regeln: dezente Leiste am unteren Rand,
+> kein Overlay, keine Animation, zwei gleichwertige Buttons, alle Details
+> aufklappbar statt als Textwand.
 
 Stand: 5. November 2026. Vor der Implementierung wurden die folgenden sechs Websites über einen textuellen Web-Abruf untersucht. Das liefert Seitenstruktur, Texte, Links und Bildreferenzen, aber keine verlässliche visuelle Prüfung von CSS, Schriftgrößen, exakten Farben, Animationen oder mobilen Zuständen. Die folgenden Beobachtungen beschränken sich bewusst auf die tatsächlich abrufbaren Inhalte. Keine fremden Assets oder Designs wurden übernommen.
 

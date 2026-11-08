@@ -1,7 +1,7 @@
 # Prüfprotokoll
 
-Stand: 6. November 2026, nach Korrektur des Eventnamens und Einbau der acht
-gelieferten Fotos.
+Stand: 6. November 2026, nach Einbindung des Brevo-Anmeldeformulars und des
+Zustimmungshinweises.
 
 ## Rahmenbedingungen
 
@@ -10,62 +10,93 @@ gelieferten Fotos.
 - `npm run build`: Next.js 16.4.5, 9 statisch generierte Routen, keine Fehler.
   Erzeugt: `/`, `/about-us`, `/anmeldung`, `/_not-found`, `/icon.png`,
   `/apple-icon.png`, `/robots.txt`, `/sitemap.xml`.
+- `npm audit --audit-level=high`: 0 Schwachstellen.
 - Zusätzlicher Testbuild mit `NEXT_PUBLIC_SITE_URL=hummmelhof.vercel.app`
   (ohne Protokoll): Build läuft, Sitemap enthält korrekte `https://`-Adressen.
 
 ## Bilder
 
-Acht Fotos (Original je 4032 × 3024 px, 3–7 MB) wurden nach `public/images/`
-als WebP mit 1800 px Breite konvertiert: zusammen **4,4 MB**, Einzelgrößen
-239–789 KB. EXIF-Daten wurden entfernt. `next/image` liefert zusätzlich
-optimierte Varianten aus; ein Hero-Abruf mit `w=1200` ergab z. B. 284 KB.
+Acht Fotos (Original je 4032 × 3024 px, 3–7 MB) liegen in `public/images/` als
+WebP mit 1800 px Breite: zusammen **4,4 MB**, Einzelgrößen 239–789 KB, EXIF
+entfernt. `next/image` liefert zusätzlich optimierte Varianten aus.
 
-Die fünf früheren SVG-Platzhalter und die zugehörige Beschriftungslogik wurden
-entfernt. Alle Bildpfade, Alt-Texte und Ausschnitte liegen zentral in
-`src/config/images.ts`. `tests/check.mjs` prüft, dass alle acht Dateien auf den
-Seiten vorkommen, als Ressource HTTP 200 liefern, kein Platzhalter-Label mehr
-sichtbar ist und der alte Eventname nirgends mehr auftaucht.
+Die fünf früheren SVG-Platzhalter und die Beschriftungslogik sind entfernt.
+Alle Bildpfade, Alt-Texte und Ausschnitte liegen zentral in
+`src/config/images.ts`. `tests/check.mjs` prüft Vorkommen und Erreichbarkeit
+aller acht Dateien, Platzhalterfreiheit und den korrigierten Eventnamen.
+
+## Anmeldung und Zustimmung
+
+Das Formular von Brevo (Sendinblue) ist als iframe auf `/anmeldung` eingebunden.
+Es wird **nur nach Zustimmung erzeugt**; ohne Zustimmung – und ohne JavaScript –
+enthält die Seite ausschließlich einen Hinweis und einen selbst ausgelösten
+Link zum Formular beim Anbieter. Der iframe nutzt
+`referrerPolicy="strict-origin-when-cross-origin"`, einen beschreibenden
+`title`, `loading="lazy"` und eine zentral einstellbare Höhe.
+
+Der Zustimmungshinweis erscheint beim ersten Besuch auf allen drei Seiten am
+unteren Rand. „Akzeptieren" und „Ablehnen" sind gleich groß; die Auswahl liegt
+nur als `accepted`/`rejected` in `localStorage` (kein Cookie, kein Server).
+„Datenschutz-Einstellungen" im Footer öffnet den Hinweis erneut, Escape gilt
+als „Ablehnen". Alle Texte stehen in `src/config/consent.ts`.
 
 ## Produktionsserver (`next start`)
 
 `npm test`: alle drei Seiten HTTP 200, je ein H1, `lang="de"`, Meta-Beschreibung,
-Canonical, Open Graph, Logo vorhanden, **34** interne Seiten-/Link-/Assetziele
+Canonical, Open Graph, Logo vorhanden, **35** interne Seiten-/Link-/Assetziele
 alle HTTP 200, `robots.txt` mit Sitemap-Verweis, `sitemap.xml` mit allen drei
-Seiten, unbekannte URL → 404, Anmeldeseite ohne `<form>` und mit dem Hinweis
-auf die noch nicht freigeschaltete Anmeldung.
+Seiten, unbekannte URL → 404.
 
-Zusätzlich direkt geprüft: `/icon.png` (16 KB), `/apple-icon.png` (44 KB),
-`/favicon.ico` (16 KB), `/images/logo.png`, alle acht `/images/*.webp`,
-`/robots.txt`, `/sitemap.xml`.
+Zusätzlich geprüft: die Anmelde-URL wird aus `src/config/registration.ts`
+gelesen und muss auf der Seite vorkommen; im ausgelieferten HTML steht **kein**
+`<iframe>` und **kein** `<form>`; der alte Platzhaltertext ist verschwunden; der
+Footer-Link zum Ändern der Auswahl ist auf jeder Seite vorhanden.
 
 ## Echte Browserprüfung
 
 Ein über npm bereitgestellter Headless-Chromium wurde mit den mitgelieferten
-Systembibliotheken gestartet. Geprüft wurden alle drei Seiten bei **375, 768,
-1440 und 1920 px** Breite:
+Systembibliotheken gestartet. Da die Sandbox `sibforms.com` nicht erreichen
+darf, wurde der iframe für den Test mit einer lokalen HTML-Antwort erfüllt. So
+lässt sich die Einbindung (src, Laden, Entfernen) prüfen, ohne dass ein
+Netzwerkfehler das Ergebnis verfälscht. Geprüft wurden alle drei Seiten bei
+**375, 768, 1440 und 1920 px** Breite:
 
 - kein horizontales Scrollen, keine über den Rand ragenden Elemente,
 - alle Bilder geladen (`naturalWidth > 0`), keine fehlenden Ressourcen,
-- keine Platzhalter-Labels, kein alter Eventname im sichtbaren Text,
 - keine JavaScript-Fehler und keine Fehler in der Browserkonsole,
 - Seitentitel und H1 auf allen Seiten korrekt,
 - mobile Navigation: öffnet mit `aria-expanded="true"`, Link führt zu
-  `/about-us`, Menü schließt nach der Navigation und auf Escape.
+  `/about-us`, Menü schließt nach der Navigation und auf Escape,
+- Hinweis auf 375 px: 261 px hoch, kein horizontales Scrollen, Buttons nebeneinander.
 
-Screenshots aller Ansichten wurden während der Prüfung erzeugt und danach
-wieder aus dem Repository entfernt (keine generierten Artefakte in Git).
+**Zustimmungspfade im Browser getestet:**
 
-**Gefunden und behoben:** Bei 701–900 px Breite erzeugte die Kombination aus
-`aspect-ratio` und `min-height: 260px` am Hero-Bild eine Mindestbreite von
-793 px und damit einen horizontalen Scrollbalken. Die `min-height` wurde
-entfernt und für Tablet-Hochformat ein angepasster Bildzuschnitt ergänzt. Nach
-dem Einbau der echten Fotos wurde außerdem `align-items: end` der Hero-Zeile
-für 701–900 px auf `start` gesetzt, damit Überschrift und Einstiegstext auf
-einer Linie beginnen. Alle vier Breiten danach erneut fehlerfrei geprüft.
+| Prüfung | Ergebnis |
+| --- | --- |
+| Erster Besuch | Hinweis sichtbar, sechs Detailpunkte aufklappbar, kein iframe im DOM |
+| Buttons | beide 210 × 46 px, gleich groß |
+| „Ablehnen" | speichert `rejected`, iframe bleibt aus, Sperrhinweis und externer Link mit `noopener noreferrer` sichtbar |
+| Reload nach Ablehnen | Hinweis bleibt aus, iframe bleibt aus |
+| Footer-Einstellungen | öffnet den Hinweis erneut |
+| „Akzeptieren" | speichert `accepted`, iframe mit korrekter `sibforms.com/serve/…`-Adresse wird geladen |
+| Reload nach Akzeptieren | Formular bleibt vorhanden |
+| Widerruf auf „Ablehnen" | iframe wird sofort aus dem DOM entfernt |
+| Escape | speichert `rejected` |
+
+Screenshots wurden während der Prüfung erzeugt und danach wieder aus dem
+Repository entfernt (keine generierten Artefakte in Git).
+
+**Früher gefunden und behoben:** Bei 701–900 px erzeugte `min-height: 260px`
+am Hero-Bild einen horizontalen Scrollbalken; behoben. Nach Einbau der echten
+Fotos wurde `align-items` der Hero-Zeile für diesen Bereich auf `start`
+gesetzt. Beides in späteren Läufen erneut fehlerfrei.
 
 **Geprüft, aber nicht als Fehler gewertet:** Lazy geladene Bilder außerhalb des
 sichtbaren Bereichs haben vor dem Scrollen noch keine Abmessungen. Nach dem
-Scrollen bzw. nach explizitem Laden sind alle Bilder vollständig vorhanden.
+Scrollen sind alle Bilder vollständig vorhanden. Die tatsächliche Darstellung
+des Brevo-Formulars konnte in der Sandbox nicht geladen werden (Netzwerk
+gesperrt); Höhe und Inhalt sollten einmal im echten Browser auf der Live-Domain
+gesichtet werden.
 
 ## Implementierte, aber nicht automatisiert gemessene Punkte
 
@@ -79,23 +110,19 @@ Scrollen bzw. nach explizitem Laden sind alle Bilder vollständig vorhanden.
 
 ## Vercel
 
-Vor der Behebung meldeten die Vercel-Deployments zwar „Deployment has completed",
-die Produktionsdomain `hummmelhof.vercel.app` lieferte aber `404 NOT_FOUND` und
-die Preview-Adresse eine Vercel-Anmeldeseite. Nach Übernahme der Änderungen auf
-`main` wurde ein neues Produktionsdeployment erzeugt und live geprüft: Startseite,
-`/about-us`, `/anmeldung`, `/robots.txt` und `/sitemap.xml` sind erreichbar, die
-Sitemap enthält korrekte `https://hummmelhof.vercel.app/…`-Adressen. Ursache und
-die dauerhaft nötigen Dashboard-Einstellungen sind in [vercel.md](vercel.md)
-dokumentiert. Auch die hier beschriebenen Änderungen wurden am 6. November 2026
-über PR #4 auf `main` übernommen: Vercel meldete „Deployment has completed", und
-Startseite, About Us und Anmeldung wurden live mit dem korrigierten Eventnamen
-und den acht Fotos geprüft.
+Vor der ersten Behebung meldeten die Deployments zwar „Deployment has completed",
+die Produktionsdomain lieferte aber `404 NOT_FOUND`. Nach frischen Deployments
+auf `main` sind Startseite, `/about-us`, `/anmeldung`, `/robots.txt` und
+`/sitemap.xml` erreichbar. Ursache und dauerhaft nötige Dashboard-Einstellungen
+stehen in [vercel.md](vercel.md).
 
 ## Vor öffentlicher Freigabe
 
-- Beim Austausch von Fotos Bildunterschriften und Alt-Texte mitpflegen.
-- Anmelde-URL ergänzen oder bewusst inaktiv lassen.
-- Veranstalter-/Kontaktangaben sowie Impressum und Datenschutzhinweise prüfen;
-  hier wurden keine Fantasiedaten eingesetzt.
-- Bei einem späteren externen Formularanbieter Datenschutz, Cookies,
-  Barrierefreiheit und iframe-Höhe gesondert kontrollieren.
+- **Impressum, Datenschutzerklärung, Veranstalter-/Kontaktangaben** ergänzen.
+  Der Zustimmungshinweis ersetzt diese Angaben nicht.
+- **Im Brevo-Formular** die Standard-Hilfetexte, den Tippfehler und einen
+  eigenen Datenschutzhinweis bzw. eine Einwilligung prüfen.
+- Die tatsächliche Formularhöhe und -darstellung auf der Live-Domain sichten;
+  bei Bedarf `embedHeight` in `src/config/registration.ts` anpassen.
+- Bei künftigen weiteren externen Diensten (Analytics, Karten, Videos) die
+  Zustimmung als echte Ladeschranke erweitern.

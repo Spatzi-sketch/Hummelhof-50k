@@ -16,11 +16,12 @@ Geprüft und erreichbar:
 - `https://hummmelhof.vercel.app/robots.txt` und `/sitemap.xml` mit korrekten
   `https://hummmelhof.vercel.app/…`-Adressen
 
-Am 6. November 2026 wurde ein weiteres Produktionsdeployment nach dem Merge von
-PR #4 ausgelöst (korrigierter Eventname, acht echte Fotos). Der GitHub-Status
-lautete erneut „Deployment has completed"; alle drei Seiten liefern seither den
-neuen Namen und die WebP-Bilder aus. Das Vorgehen bei jedem künftigen Deployment
-bleibt gleich: Änderung auf `main` übernehmen, Status abwarten, Seiten live prüfen.
+Am 6. November 2026 wurden weitere Produktionsdeployments nach Merges auf `main`
+ausgelöst (korrigierter Eventname, acht echte Fotos, Brevo-Anmeldeformular mit
+Zustimmungshinweis). Der GitHub-Status lautete jeweils „Deployment has
+completed"; alle drei Seiten wurden danach live geprüft. Das Vorgehen bei jedem
+künftigen Deployment bleibt gleich: Änderung auf `main` übernehmen, Status
+abwarten, Seiten live prüfen.
 
 Die Ursache war damit keine fehlerhafte Anwendung, sondern eine noch nicht auf
 der Produktionsdomain liegende Veröffentlichung. Die folgenden Einstellungen
@@ -98,7 +99,9 @@ Projekt in Vercel öffnen (`velocity-crash / hummmelhof`), dann der Reihe nach:
 3. Die unter *Domains* angezeigte Adresse in einem **privaten Browserfenster**
    öffnen. Es muss die Startseite erscheinen – keine Anmeldung, kein 404.
 4. `/about-us` und `/anmeldung` direkt aufrufen. Beide Seiten müssen ohne
-   Umleitung funktionieren.
+   Umleitung funktionieren. Auf `/anmeldung` erscheint das Brevo-Formular erst
+   nach „Akzeptieren" im Zustimmungshinweis; vorher sieht man bewusst nur den
+   Hinweis und einen externen Link. Das ist kein Ladefehler.
 5. Optional eigene Domain hinzufügen. Danach `NEXT_PUBLIC_SITE_URL` mit
    vollständiger `https://`-Adresse setzen und erneut deployen, damit
    Open-Graph-Links, Canonical-URLs und Sitemap stimmen.

@@ -1,8 +1,9 @@
 # Hummelhof 50K
 
 Deutschsprachige Website für die **50 Loop Hummelhof Challenge** am **5. Dezember 2026**.
-Drei eigene Seiten, kein Backend, keine Datenbank, kein Tracking. Das
-bereitgestellte Eventlogo ist als Logo **und** als Favicon eingebunden.
+Drei eigene Seiten, kein Backend, keine Datenbank, kein eigenes Tracking. Das
+bereitgestellte Eventlogo ist als Logo **und** als Favicon eingebunden. Das
+Anmeldeformular von Brevo wird erst nach ausdrücklicher Zustimmung geladen.
 
 Das Projekt ist so vorbereitet, dass es direkt mit Vercel verbunden und
 veröffentlicht werden kann. Falls die Seite nach dem Deploy nicht erscheint:
@@ -17,15 +18,16 @@ Schritt-für-Schritt-Anleitung.
 | --- | --- |
 | `/` | Home: Einstieg, Eventdaten, Challenge, Community, Bildbereiche, Geschichte, Anmeldung |
 | `/about-us` | Ausführliche Entstehungsgeschichte, Community-Gedanke, Erklärung der Challenge |
-| `/anmeldung` | Eventinfos und klar erkennbarer Platzhalter für das spätere Formular |
+| `/anmeldung` | Eventinfos und eingebettetes Anmeldeformular (erst nach Zustimmung) |
 | `/does-not-exist` | Eigene 404-Seite |
 
 **Technik:** Next.js 16 (App Router), React 19, TypeScript, responsives CSS ohne
 Framework. Manrope und DM Sans werden lokal über npm ausgeliefert, also ohne
 Google-Fonts-Anfrage im Browser. Alle drei Seiten werden beim Build statisch
-vorgerendert; nur die mobile Navigation benötigt JavaScript im Browser.
-`next/image` sorgt für responsive, optimierte Bilder. Es sind keinerlei
-API-Schlüssel oder Umgebungsvariablen nötig.
+vorgerendert. JavaScript im Browser brauchen die mobile Navigation, der
+Zustimmungshinweis und das Laden des Formulars. `next/image` sorgt für
+responsive, optimierte Bilder. Es sind keinerlei API-Schlüssel oder
+Umgebungsvariablen nötig.
 
 ---
 
@@ -54,13 +56,19 @@ Hummelhof-50k/
 │   │   └── sitemap.ts         Erzeugt /sitemap.xml
 │   ├── components/
 │   │   ├── Header.tsx         Navigation inkl. mobiler Menülogik
+│   │   ├── CookieConsent.tsx  Zustimmungshinweis (Akzeptieren / Ablehnen)
+│   │   ├── ConsentSettingsButton.tsx  Footer: Auswahl jederzeit ändern
+│   │   ├── RegistrationEmbed.tsx  Formular erst nach Zustimmung laden
 │   │   └── shared.tsx         Buttons, Fotos, Fakten, Footer, Runden-Grafik
-│   └── config/
-│       ├── event.ts           Datum, Ort, Distanzen, Bestzeit, Wochentag
-│       ├── images.ts          ALLE Bildpfade, Alt-Texte, Ausschnitte
-│       ├── registration.ts    Zentrale Anmelde-URL (registrationUrl) und Modus
-│       ├── site.ts            Domain für Metadaten/Sitemap (auf Vercel automatisch)
-│       └── seo.ts             Einheitliche Seitentitel und Social-Metadaten
+│   ├── config/
+│   │   ├── consent.ts         ALLE Texte des Zustimmungshinweises
+│   │   ├── event.ts           Datum, Ort, Distanzen, Bestzeit, Wochentag
+│   │   ├── images.ts          ALLE Bildpfade, Alt-Texte, Ausschnitte
+│   │   ├── registration.ts    Anmelde-URL, Modus, Anbieter, iframe-Höhe
+│   │   ├── site.ts            Domain für Metadaten/Sitemap (auf Vercel automatisch)
+│   │   └── seo.ts             Einheitliche Seitentitel und Social-Metadaten
+│   └── lib/
+│       └── consent.ts         Gemeinsame Auswahl (localStorage, kein Cookie)
 ├── docs/
 │   ├── design-research.md     Recherche und Gestaltungskonzept
 │   ├── quality.md             Prüfprotokoll
@@ -140,31 +148,73 @@ Die aktuellen Favicons sind aus dem gelieferten Logo verkleinert und optimiert.
 
 ---
 
-## 5. Echtes Anmeldeformular ergänzen
+## 5. Anmeldeformular anpassen
 
-**Nur eine Datei ändern:** `src/config/registration.ts`
+**Das Formular ist eingebunden.** Es liegt als iframe auf `/anmeldung` und
+stammt von **Brevo (Sendinblue)**. Alle Einstellungen stehen ausschließlich in
+`src/config/registration.ts`:
 
-```ts
-export const registration: { registrationUrl: string; mode: "link" | "embed" } = {
-  registrationUrl: "",   // hier später die vollständige https-URL eintragen
-  mode: "link",
-};
-```
-
-| Einstellung | Wirkung |
+| Feld | Aktueller Wert / Wirkung |
 | --- | --- |
-| `registrationUrl: ""` | Alle Anmelde-Buttons führen zur Informationsseite `/anmeldung`. Kein Formular, keine Datenerfassung. |
-| URL + `mode: "link"` | **Alle** Anmelde-Buttons (Header, Home, About Us, Footer, Anmeldeseite) zeigen direkt auf das echte Formular. |
-| URL + `mode: "embed"` | Buttons führen auf `/anmeldung`; dort wird das Formular in einem beschrifteten iframe angezeigt. Der Anbieter muss Einbettung erlauben (Datenschutz und Datenerfassung dann separat prüfen). |
+| `registrationUrl` | Die gelieferte `https://…sibforms.com/serve/…`-Adresse. Nur hier ändern, wenn ein neues Formular kommt. |
+| `mode: "embed"` | Formular erscheint auf `/anmeldung` – **erst nach Zustimmung** im Hinweis (siehe Kapitel 6). Alle Anmelde-Buttons führen zur Anmeldeseite. |
+| `mode: "link"` | Stattdessen öffnen **alle** Anmelde-Buttons das Formular direkt beim Anbieter. Ein Wort ändern, sonst nichts. |
+| `registrationUrl: ""` | Formular deaktivieren: alle Buttons zeigen wieder die Informationsseite mit dem Hinweis „Die Anmeldung wird in Kürze freigeschaltet." |
+| `provider` / `embedTitle` | Anbietername im Text und Beschriftung des iframe für Screenreader. |
+| `embedHeight` | Höhe des iframe in Pixeln. Wirkt das Formular unten abgeschnitten, diesen Wert erhöhen – mehr ist nicht nötig. |
 
-Danach die Beschreibung im `metadata`-Block von `src/app/anmeldung/page.tsx`
-anpassen und in `tests/check.mjs` die Prüfung auf den inaktiven Zustand
-entsprechend ändern. Es ist bewusst **keine** erfundene URL und **kein**
-scheinbar funktionierendes Formular eingebaut.
+Brevo empfiehlt für seine Formulare genau diese iframe-Einbettung; der Anbieter
+muss sie erlauben. Das Formular selbst wird nicht von dieser Website betrieben:
+Eingaben gehen direkt an Brevo, hier gibt es keine Datenbank und keine
+Anmeldedaten. Die Formularhöhe lässt sich in Brevo und über `embedHeight`
+abstimmen.
+
+> **Bitte im Brevo-Formular selbst prüfen:** Die gelieferte Version enthält noch
+> die Standard-Hilfetexte („Passe diesen optionalen Hilfetext an …") und einen
+> Tippfehler („angemdelten"). Außerdem sollte dort ein eigener
+> Datenschutzhinweis bzw. eine Einwilligung für die Datenverarbeitung stehen.
+> Das lässt sich nur in Brevo ändern, nicht im Code dieser Website.
 
 ---
 
-## 6. Mit Vercel veröffentlichen
+## 6. Zustimmungshinweis (Cookies & externe Inhalte)
+
+Die Website selbst setzt **keine Cookies, kein Tracking und keine Analyse**.
+Erst durch das externe Formular kommt ein Drittanbieter ins Spiel. Deshalb
+erscheint beim ersten Besuch auf jeder Seite ein dezenter Hinweis am unteren
+Rand – ohne Overlay, ohne Animation, mit zwei gleich großen Buttons:
+
+- **„Akzeptieren"** → das Brevo-Formular wird geladen; sonst nichts.
+- **„Ablehnen"** → es wird keine Verbindung zu Brevo aufgebaut; auf
+  `/anmeldung` bleibt das Formular ausgeblendet. Stattdessen gibt es einen
+  selbst ausgelösten Link „Anmeldung extern öffnen".
+- **„Alle Hinweise im Detail"** aufklappen: welche Daten das Formular abfragt,
+  dass Verbindungsdaten an Brevo übertragen werden und dort Cookies gesetzt
+  werden können, dass Vercel als Host technisch notwendige Verbindungsdaten
+  verarbeitet, dass wir keine Werbung/Profilbildung/Weitergabe machen, und dass
+  nur die Auswahl lokal gespeichert wird.
+- **„Datenschutz-Einstellungen"** im Footer öffnet den Hinweis auf jeder Seite
+  erneut. Ein Widerruf entfernt ein bereits geladenes Formular sofort.
+- **Escape** entspricht „Ablehnen" (die datensparsamere Auswahl). Sichtbare
+  Fokuszustände, `prefers-reduced-motion` und Tastaturbedienung sind
+  berücksichtigt. Ohne JavaScript wird gar kein externes Formular geladen; der
+  direkte Link bleibt nutzbar.
+
+**Was gespeichert wird:** ausschließlich `accepted` oder `rejected` unter dem
+Schlüssel `hummelhof-externe-inhalte-v1` im `localStorage` des Browsers – kein
+Cookie, kein Server, kein Profil. Damit der Hinweis nicht bei jedem Besuch
+kommt. Löschen der Browserdaten setzt die Auswahl zurück.
+
+**Alles ohne Programmierung ändern:** Die kompletten Texte, die Buttonnamen und
+der Speicherschlüssel stehen in `src/config/consent.ts`. Bei einer
+inhaltlichen Änderung den Schlüssel auf `-v2` erhöhen – dann wird die
+Auswahl für alle Besucherinnen und Besucher neu abgefragt. Die technische Logik
+(`src/lib/consent.ts`) und die drei Komponenten müssen dafür nicht angefasst
+werden.
+
+---
+
+## 7. Mit Vercel veröffentlichen
 
 1. Sicherstellen, dass die Dateien auf **`main`** liegen (Produktionsbranch).
 2. In Vercel **Add New → Project**, GitHub verbinden,
@@ -182,8 +232,9 @@ scheinbar funktionierendes Formular eingebaut.
 
 > **Aktueller Stand (6. November 2026):** Nach dem Merge auf `main` ist die
 > Website unter **`https://hummmelhof.vercel.app`** online; alle drei Seiten,
-> `robots.txt` und `sitemap.xml` wurden live geprüft. Das letzte Deployment
-> enthält den korrigierten Eventnamen und die acht echten Fotos. Vorher lieferte diese
+> `robots.txt` und `sitemap.xml` wurden live geprüft. Das aktuelle Deployment
+> enthält den korrigierten Eventnamen, die acht echten Fotos, das eingebettete
+> Anmeldeformular und den Zustimmungshinweis. Vorher lieferte diese
 > Adresse `404 NOT_FOUND`, weil kein aktuelles Produktionsdeployment auf `main`
 > lag – das war eine Vercel-Einstellung, kein Codefehler. Damit das so bleibt:
 > Änderungen immer auf `main` übernehmen und den Deployment-Schutz für die
@@ -197,7 +248,7 @@ setzen und erneut deployen.
 
 ---
 
-## 7. Lokal entwickeln und prüfen
+## 8. Lokal entwickeln und prüfen
 
 Voraussetzung: Node.js 22 LTS und npm.
 
@@ -212,33 +263,41 @@ npm test             # gegen laufenden Server, TEST_URL überschreibbar
 
 `npm test` prüft alle drei Seiten, genau ein H1 pro Seite, deutsche Sprache,
 Meta-Beschreibung, Canonical, Open Graph, interne Links, alle Bild-/Icon- und
-Skriptressourcen, den inaktiven Anmeldestatus, `robots.txt`, `sitemap.xml` und
-die 404-Seite.
+Skriptressourcen, die echte Anmelde-URL aus `registration.ts`, dass ohne
+Zustimmung **kein** iframe ausgeliefert wird, den Footer-Link zum Ändern der
+Auswahl, `robots.txt`, `sitemap.xml` und die 404-Seite.
 
 ---
 
-## 8. Was aktuell Platzhalter bzw. offen ist
+## 9. Was aktuell Platzhalter bzw. offen ist
 
-- **Anmeldung:** noch keine echte URL, daher Informationsseite mit
-  „Die Anmeldung wird in Kürze freigeschaltet." Kein Formular.
-- **Genaue Startzeit, Veranstalter-/Kontaktangaben, Impressum/Datenschutz**
-  wurden nicht geliefert und nicht erfunden. Vor dem öffentlichen Start prüfen,
-  welche rechtlichen Angaben erforderlich sind.
-- Keine erfundenen Sponsoren, Startgebühren, Preise, Partner, Social-Accounts
-  oder Verpflegungsstationen.
+- **Impressum, Datenschutzerklärung, Veranstalter- und Kontaktangaben** sowie
+  die genaue Startzeit wurden für diese Website nicht geliefert und nicht
+  erfunden. Vor dem öffentlichen Start prüfen, welche rechtlichen Angaben
+  erforderlich sind – ein Zustimmungshinweis ersetzt sie nicht.
+- **Das Brevo-Formular** wird von einem Drittanbieter betrieben; dessen eigene
+  Datenschutzhinweise, Einwilligung im Formular und die Standard-Hilfetexte
+  liegen außerhalb dieses Projekts (siehe Kapitel 5).
+- Auf dieser Website selbst stehen keine erfundenen Sponsoren, Startgebühren,
+  Preise, Partner, Social-Accounts oder Verpflegungsstationen; zusätzliche
+  Angaben stehen ausschließlich im Formular und stammen von dir.
 - Die Social-Media-Vorschau verwendet derzeit das Eventlogo als Bild.
 
 ---
 
-## 9. Qualitätsstand
+## 10. Qualitätsstand
 
 Produktionsbuild, TypeScript und HTTP-Tests sind erfolgreich; alle acht Fotos
-werden dabei auf Einbindung und Erreichbarkeit geprüft. Zusätzlich wurden alle
-drei Seiten im echten Browser bei **375, 768, 1440 und 1920 px** geprüft: keine
+werden auf Einbindung und Erreichbarkeit geprüft. Zusätzlich wurden alle drei
+Seiten im echten Browser bei **375, 768, 1440 und 1920 px** geprüft: keine
 horizontalen Scrollbalken, keine überstehenden Elemente, alle Bilder geladen,
-keine Platzhalter-Labels, keine Konsolenfehler. Die mobile Navigation öffnet,
-navigiert korrekt, schließt nach Klick und reagiert auf Escape. Details:
-[docs/quality.md](docs/quality.md).
+keine Konsolenfehler. Separat getestet: Hinweis erscheint nur ohne Auswahl,
+„Ablehnen" und „Akzeptieren" speichern korrekt und bleiben nach einem Reload
+erhalten, der iframe wird erst nach Zustimmung erzeugt und beim Widerruf
+sofort entfernt, der externe Link ist mit `noopener` abgesichert, Escape
+entspricht „Ablehnen", beide Buttons sind gleich groß. Die mobile Navigation
+öffnet, navigiert korrekt, schließt nach Klick und reagiert auf Escape.
+Details: [docs/quality.md](docs/quality.md).
 
 Gestaltungsrecherche und eigenständiges Designkonzept:
 [docs/design-research.md](docs/design-research.md).

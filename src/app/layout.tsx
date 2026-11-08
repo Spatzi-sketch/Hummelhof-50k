@@ -3,6 +3,7 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/dm-sans";
 import "./globals.css";
 import Header from "@/components/Header";
+import CookieConsent from "@/components/CookieConsent";
 import { Footer } from "@/components/shared";
 import { event } from "@/config/event";
 import { siteUrl } from "@/config/site";
@@ -47,6 +48,7 @@ export default function RootLayout({
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );
