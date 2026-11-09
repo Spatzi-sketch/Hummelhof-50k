@@ -80,8 +80,8 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
 
   if (route === "/") {
     assert.ok(html.includes("SAMSTAG"), "Wochentag im Hero");
-    assert.ok(main.includes("Aus einem persönlichen Lauf über"), "Neuer Einleitungstext");
-    assert.ok(main.includes("Im Mittelpunkt stehen die Freude am Laufen und das Miteinander."), "Einleitungstext vollständig");
+    const heroCopy = main.match(/<div class="hero-copy"><p>([\s\S]*?)<\/p>/)?.[1].replaceAll("<!-- -->", "");
+    assert.equal(heroCopy, "Ich bin 50 Kilometer im Hummelhofwald in 5:36 Stunden gelaufen. Am 5. Dezember machen wir daraus eine gemeinsame Challenge für die Laufcommunity.", "Einleitungstext exakt");
   }
   assert.ok(html.includes('href="/faq"'), `FAQ-Navigation: ${route}`);
   if (["/", "/faq", "/anmeldung"].includes(route)) {
@@ -117,7 +117,7 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
     }
   }
   if (route === "/teilnahmebedingungen") {
-    for (const text of ["05 · Haftung und Eigenverantwortung", "eigene Verantwortung und eigenes Risiko", "äußere Einflüsse", "Überlastungserscheinungen", "nicht gesperrt", "Gesetzlich zwingende Haftungsansprüche", "bei Personenschäden, bleiben davon unberührt."]) {
+    for (const text of ["<h2>Haftung und Eigenverantwortung</h2>", "eigene Verantwortung und eigenes Risiko", "äußere Einflüsse", "Überlastungserscheinungen", "nicht gesperrt", "Gesetzlich zwingende Haftungsansprüche", "bei Personenschäden, bleiben davon unberührt."]) {
       assert.ok(main.includes(text), `Haftungshinweis enthält ${text}`);
     }
   }
