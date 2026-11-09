@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ConsentSettingsButton from "@/components/ConsentSettingsButton";
 import { images, type EventImage } from "@/config/images";
-import { event } from "@/config/event";
+import { event, schedule } from "@/config/event";
 import { registrationHref } from "@/config/registration";
 export function Button({
   href,
@@ -18,6 +18,14 @@ export function Button({
       {children}
       <span aria-hidden="true">↗</span>
     </Link>
+  );
+}
+export function MapLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a className="text-link" href={href} target="_blank" rel="noopener noreferrer">
+      {children} <span aria-hidden="true">↗</span>
+      <span className="visually-hidden"> (öffnet in einem neuen Tab)</span>
+    </a>
   );
 }
 export function Photo({
@@ -49,7 +57,7 @@ export function Photo({
 }
 export function Facts() {
   const facts = [
-    [event.date, "Der gemeinsame Lauftag"],
+    [event.date, `Start ${schedule.start} · Startnummernausgabe ab ${schedule.bibPickup}`],
     [
       `${event.distance} Kilometer`,
       `${event.loops} Runden · je ${event.loopKm} Kilometer`,
@@ -107,6 +115,7 @@ export function Footer() {
         <nav aria-label="Footernavigation">
           <Link href="/">Home</Link>
           <Link href="/about-us">About Us</Link>
+          <Link href="/faq">FAQ</Link>
           <Link href={registrationHref}>Anmeldung ↗</Link>
         </nav>
       </div>
@@ -125,7 +134,7 @@ export function LoopGraphic() {
     <div
       className="loop-graphic"
       role="img"
-      aria-label="50 Runden mit je einem Kilometer ergeben 50 Kilometer. Schematische Grafik, keine Streckenkarte."
+      aria-label={`${event.loops} Runden mit je ${event.loopKm} Kilometer ergeben ${event.distance} Kilometer. Schematische Grafik, keine Streckenkarte.`}
     >
       <span className="loop-top">DIE IDEE IST EINFACH.</span>
       <svg viewBox="0 0 460 310" aria-hidden="true">
@@ -151,7 +160,7 @@ export function LoopGraphic() {
           fontSize="60"
           fontWeight="500"
         >
-          1 km
+          {event.loopKm} km
         </text>
         <text
           x="230"

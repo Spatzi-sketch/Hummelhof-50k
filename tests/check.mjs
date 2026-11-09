@@ -22,11 +22,13 @@ const registrationConfig = fs.readFileSync(
 const urlMatch = registrationConfig.match(/registrationUrl:\s*"([^"]+)"/);
 assert.ok(urlMatch, "Anmelde-URL in src/config/registration.ts");
 const formUrl = urlMatch[1];
+const registrationEnabled = /enabled:\s*true/.test(registrationConfig);
 assert.ok(formUrl.startsWith("https://"), "Anmelde-URL verschlüsselt");
 
 const targets = new Set([
   "/",
   "/about-us",
+  "/faq",
   "/anmeldung",
   "/icon.png",
   "/apple-icon.png",
@@ -37,11 +39,17 @@ const targets = new Set([
 ]);
 
 let allHtml = "";
-for (const route of ["/", "/about-us", "/anmeldung"]) {
+for (const route of ["/", "/about-us", "/faq", "/anmeldung"]) {
   const response = await fetch(base + route);
   assert.equal(response.status, 200, `Seite: ${route}`);
   const html = await response.text();
   allHtml += html;
+  // Nur das vorgerenderte HTML prüfen, nicht den ebenfalls enthaltenen React-Payload.
+  const rendered = html.split("</body>")[0];
+  const main = rendered.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+  const nav = rendered.match(/<nav\b[^>]*aria-label="Hauptnavigation"[^>]*>([\s\S]*?)<\/nav>/)?.[1] || "";
+  assert.match(nav, /href="\/"[\s\S]*href="\/about-us"[\s\S]*href="\/faq"[\s\S]*href="\/anmeldung"/, `Reihenfolge der Navigation: ${route}`);
+  assert.match(rendered, /aria-label="Footernavigation"[\s\S]*href="\/faq"/, `FAQ im Footer: ${route}`);
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1, `Ein H1: ${route}`);
   assert.ok(html.includes('lang="de"'), `Sprache: ${route}`);
   assert.ok(html.includes('name="description"'), `Beschreibung: ${route}`);
@@ -70,25 +78,35 @@ for (const route of ["/", "/about-us", "/anmeldung"]) {
   if (route === "/") {
     assert.ok(html.includes("SAMSTAG"), "Wochentag im Hero");
   }
+  assert.ok(html.includes('href="/faq"'), `FAQ-Navigation: ${route}`);
+  if (["/", "/faq", "/anmeldung"].includes(route)) {
+    assert.ok(html.includes("09:00 Uhr") || html.includes("09:00 UHR"), `Startzeit: ${route}`);
+    assert.ok(html.includes("08:15 Uhr"), `Startnummernausgabe: ${route}`);
+    assert.ok(html.includes("48.275215%2C14.294004"), `Startpunkt-Koordinaten: ${route}`);
+    assert.ok(html.includes("Pizzeria Tuana"), `Orientierung: ${route}`);
+  }
+  if (route === "/faq") {
+    for (const text of ["Allgemeine Informationen", "Startort und Anreise", "Strecke und Orientierung", "Verpflegung und Versorgung", "Medaillen und Teilnahme", "Hatschekstraße", "41 und 43", "100 Meter", "gelben Bändern", "WC-Anlage", "Stromanschluss", "Wasserquelle", "Iso-Drink", "Riegeln", "Kuchen", "Bananen", "Medaille", "unabhängig davon", "kostenlos", "freiwillig"]) {
+      assert.ok(main.toLowerCase().includes(text.toLowerCase()), `FAQ enthält ${text}`);
+    }
+    assert.ok(main.includes("Haltestelle+Hatschekstra%C3%9Fe+Linz"), "Haltestellenlink");
+    assert.equal((main.match(/<details class="faq-item"/g) || []).length, 16, "Alle FAQ-Fragen nativ aufklappbar");
+    assert.equal((main.match(/<summary>/g) || []).length, 16, "Jede FAQ hat eine Zusammenfassung");
+  }
   if (route === "/anmeldung") {
-    assert.ok(html.includes(formUrl), "Echtes Formular verlinkt");
-    assert.ok(
-      !html.includes("Die Anmeldung wird in Kürze freigeschaltet."),
-      "Alter Platzhaltertext entfernt",
-    );
     assert.ok(!html.includes("<form"), "Kein eigenes Formular im HTML");
-    assert.ok(
-      !html.includes("<iframe"),
-      "iframe erst nach Zustimmung, nicht im HTML",
-    );
-    assert.ok(
-      html.includes("Das Formular ist noch ausgeblendet."),
-      "Sperre ohne Zustimmung sichtbar",
-    );
+    assert.ok(!html.includes("<iframe"), "Kein iframe ohne Zustimmung");
+    if (registrationEnabled) {
+      assert.ok(main.includes(formUrl), "Konfiguriertes Formular verlinkt");
+      assert.ok(html.includes("Das Formular ist noch ausgeblendet."), "Sperre ohne Zustimmung sichtbar");
+    } else {
+      assert.ok(html.includes("Die Anmeldung wird in Kürze freigeschaltet."), "Anmeldung bleibt Platzhalter");
+      assert.ok(!html.includes(formUrl), "Deaktiviertes Formular wird nicht verlinkt");
+    }
   }
   console.log(`PASS Seite und Metadaten ${route}`);
 }
-console.log("PASS Anmeldung: echte URL, Zustimmungssperre, kein Scheinformular");
+console.log("PASS Anmeldungsstatus und kein Scheinformular");
 
 for (const file of photoFiles) {
   assert.ok(allHtml.includes(file), `Foto eingebunden: ${file}`);
@@ -104,7 +122,7 @@ console.log(`PASS ${targets.size} interne Seiten, Links und Ressourcen`);
 const robots = await (await fetch(base + "/robots.txt")).text();
 assert.ok(robots.includes("Sitemap:"), "Sitemap in robots.txt");
 const sitemap = await (await fetch(base + "/sitemap.xml")).text();
-for (const path of ["/about-us", "/anmeldung"]) {
+for (const path of ["/about-us", "/faq", "/anmeldung"]) {
   assert.ok(sitemap.includes(path), `Sitemap enthält ${path}`);
 }
 console.log("PASS robots.txt und sitemap.xml");

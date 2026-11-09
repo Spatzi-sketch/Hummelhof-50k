@@ -1,6 +1,6 @@
-import { Button, Facts, Photo, Invite, LoopGraphic } from "@/components/shared";
+import { Button, Facts, Photo, Invite, LoopGraphic, MapLink } from "@/components/shared";
 import { images } from "@/config/images";
-import { event } from "@/config/event";
+import { event, schedule, location, eventInfo } from "@/config/event";
 import { registrationHref } from "@/config/registration";
 import { pageMetadata } from "@/config/seo";
 
@@ -18,7 +18,7 @@ export default function Home() {
           <div>
             <p className="eyebrow">
               <span className="dot" /> COMMUNITY RUN · {event.date} ·{" "}
-              {event.location.toUpperCase()}
+              {event.location.toUpperCase()} · START {schedule.start.toUpperCase()}
             </p>
             <h1>
               {event.distance} Kilometer.
@@ -68,6 +68,50 @@ export default function Home() {
         </div>
       </section>
       <Facts />
+      <section className="section wrap event-details">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">DER LAUFTAG / ALLE ECKDATEN</p>
+            <h2>Gut ankommen.<br /><em>Gemeinsam loslaufen.</em></h2>
+          </div>
+          <p>{event.weekdayLong}, {event.dateLong} · {event.location}</p>
+        </div>
+        <div className="event-details-grid">
+          <div>
+            <dl className="event-list">
+              <div><dt>Ab {schedule.arrival}</dt><dd>Eintreffen und Startnummernausgabe</dd></div>
+              <div><dt>{schedule.start}</dt><dd>Gemeinsamer Start der Challenge</dd></div>
+              <div><dt>Die Challenge</dt><dd>{event.distance} Kilometer · {event.loops} Runden zu je {event.loopKm} Kilometer</dd></div>
+            </dl>
+            <p>{eventInfo.participation}</p>
+            <p>{eventInfo.medal}</p>
+          </div>
+          <div className="location-panel">
+            <p className="eyebrow">STARTPUNKT / HUMMELHOFWALD</p>
+            <h3>{location.start.address}</h3>
+            <p>{location.start.orientation}. Bitte findet euch hier zur Startnummernausgabe und zum gemeinsamen Start ein.</p>
+            <MapLink href={location.start.mapsUrl}>Startpunkt in Google Maps öffnen</MapLink>
+          </div>
+        </div>
+      </section>
+      <section className="community-section">
+        <div className="wrap event-details-grid">
+          <div>
+            <p className="eyebrow">ANREISE / GUT UNTERWEGS</p>
+            <h2>Dein Weg<br /><em>zum Start.</em></h2>
+            <p>Wir empfehlen, wenn möglich, öffentlich anzureisen. Die Haltestelle {location.transit.stop} wird von den Buslinien {location.transit.lines.join(" und ")} angefahren und liegt {location.transit.distance} vom Startpunkt entfernt.</p>
+            <MapLink href={location.transit.mapsUrl}>Haltestelle in Google Maps öffnen</MapLink>
+          </div>
+          <div>
+            <p className="eyebrow">MIT DEM AUTO</p>
+            <p>{location.parking}</p>
+            <p className="eyebrow">STRECKE &amp; VERPFLEGUNG</p>
+            <p>{eventInfo.markings}</p>
+            <p>{eventInfo.refreshments} {eventInfo.supplyReminder}</p>
+            <Button href="/faq">Alle FAQs ansehen</Button>
+          </div>
+        </div>
+      </section>
       <section className="section wrap split">
         <div>
           <p className="eyebrow">01 / DIE HERAUSFORDERUNG</p>

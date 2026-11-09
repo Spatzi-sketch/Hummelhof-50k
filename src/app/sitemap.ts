@@ -17,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: new URL("/faq", siteUrl).toString(),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: new URL("/anmeldung", siteUrl).toString(),
       lastModified,
       changeFrequency: "monthly",

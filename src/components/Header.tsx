@@ -68,6 +68,13 @@ export default function Header() {
             About Us
           </Link>
           <Link
+            href="/faq"
+            aria-current={path === "/faq" ? "page" : undefined}
+            onClick={() => setOpen(false)}
+          >
+            FAQ
+          </Link>
+          <Link
             className="nav-cta"
             href={registrationHref}
             aria-current={path === "/anmeldung" ? "page" : undefined}
