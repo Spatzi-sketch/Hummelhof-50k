@@ -54,9 +54,6 @@ export default function Home() {
           <div className="event-tag">
             <span>{event.weekdayLong.toUpperCase()}</span>
             <strong>{event.date.split(".").slice(0, 2).join(" / ")}</strong>
-            <span>
-              {event.dateISO.slice(0, 4)} · {event.location.toUpperCase()}
-            </span>
           </div>
         </div>
         <div className="image-foot">

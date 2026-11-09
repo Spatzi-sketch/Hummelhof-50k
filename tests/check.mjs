@@ -90,8 +90,13 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung"]) {
       assert.ok(main.toLowerCase().includes(text.toLowerCase()), `FAQ enthält ${text}`);
     }
     assert.ok(main.includes("Haltestelle+Hatschekstra%C3%9Fe+Linz"), "Haltestellenlink");
-    assert.equal((main.match(/<details class="faq-item"/g) || []).length, 16, "Alle FAQ-Fragen nativ aufklappbar");
-    assert.equal((main.match(/<summary>/g) || []).length, 16, "Jede FAQ hat eine Zusammenfassung");
+    const faqItems = [...main.matchAll(/<details class="faq-item">([\s\S]*?)<\/details>/g)].map((match) => match[1]);
+    const openCourse = faqItems.find((item) => item.includes("Ist die Strecke während der Veranstaltung gesperrt?"));
+    assert.ok(openCourse && openCourse.includes("öffentlich zugänglich") && openCourse.includes("hat selbstverständlich Vorrang"), "Offene Strecke und Rücksichtnahme");
+    const extraLaps = faqItems.find((item) => /Ist es möglich, mehr als (?:<!-- -->)?50(?:<!-- -->)? Runden zu laufen\?/.test(item));
+    assert.ok(extraLaps && extraLaps.includes("keine Begrenzung nach oben") && extraLaps.includes("Eine nur teilweise absolvierte Runde") && /<strong>Wichtig für die Wertung:/.test(extraLaps), "Zusätzliche Runden und hervorgehobene Wertungsregel");
+    assert.equal((main.match(/<details class="faq-item"/g) || []).length, 18, "Alle FAQ-Fragen nativ aufklappbar");
+    assert.equal((main.match(/<summary>/g) || []).length, 18, "Jede FAQ hat eine Zusammenfassung");
   }
   if (route === "/anmeldung") {
     assert.ok(!html.includes("<form"), "Kein eigenes Formular im HTML");
