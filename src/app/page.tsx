@@ -33,7 +33,7 @@ export default function Home() {
               Ich bin {event.distance} Kilometer im Hummelhofwald in {event.bestTime} Stunden gelaufen. Am {event.dateLong.replace(/\s+\d{4}$/, "")} machen wir daraus eine gemeinsame Challenge für die Laufcommunity.
             </p>
             <p className="muted">
-              Schlag die {event.bestTime} Stunden. Oder komm einfach wegen der
+              Laufe 50 Runden in unter {event.bestTime} Stunden. Oder komm einfach wegen der
               Community.
             </p>
             <div className="hero-actions">
