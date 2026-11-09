@@ -28,6 +28,7 @@ export const event = {
   loopKm: 1,
   bestTime: "5:36",
   bestTimeLong: "5 Stunden und 36 Minuten",
+  durationLong: "5 Stunden und 36 Minuten",
 };
 
 // Organisatorische Angaben werden auf allen Seiten aus dieser Konfiguration bezogen.

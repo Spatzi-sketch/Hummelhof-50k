@@ -33,6 +33,24 @@ export default function FAQ() {
       title: "Strecke und Orientierung",
       questions: [
         { question: "Wie sieht die Strecke aus?", answer: <p>Eine Runde ist genau {event.loopKm} Kilometer lang. Insgesamt ergeben {event.loops} Runden eine Gesamtdistanz von {event.distance} Kilometern.</p> },
+        {
+          question: "Ist die Strecke während der Veranstaltung gesperrt?",
+          answer: <>
+            <p>Nein, die Strecke wird während der Veranstaltung nicht gesperrt. Der Hummelhofwald bleibt weiterhin öffentlich zugänglich. Deshalb bitten wir alle Teilnehmer, während des Laufens Rücksicht auf andere Parkbesucher, Spaziergänger und Fußgänger zu nehmen.</p>
+            <p>Achtet auf eure Umgebung, verhaltet euch respektvoll und passt eure Geschwindigkeit gegebenenfalls an. Wir möchten einen schönen gemeinsamen Lauftag erleben, ohne andere Menschen in ihrer Freizeit einzuschränken.</p>
+            <p>Die Rücksichtnahme auf andere Parkbesucher hat selbstverständlich Vorrang.</p>
+          </>,
+        },
+        {
+          question: `Ist es möglich, mehr als ${event.loops} Runden zu laufen?`,
+          answer: <>
+            <p>Ja, natürlich! Die {event.loops} Runden beziehungsweise {event.distance} Kilometer sind unser gemeinsames Ziel, aber es gibt keine Begrenzung nach oben.</p>
+            <p>Der besondere Reiz der Challenge besteht darin, herauszufinden, wie viele vollständige Runden innerhalb von {event.durationLong} möglich sind.</p>
+            <p>Unser Ziel ist es, die {event.distance} Kilometer innerhalb dieser Zeit zu schaffen und damit die bisherige Referenzzeit von {event.bestTimeLong} als Herausforderung zu nehmen. Wer schneller fertig ist oder darüber hinaus noch weitere Runden laufen möchte, darf das selbstverständlich tun.</p>
+            <p><strong>Wichtig für die Wertung: Es zählt ausschließlich die letzte vollständig absolvierte Runde innerhalb der vorgegebenen Eventzeit von {event.durationLong}.</strong></p>
+            <p>Das bedeutet: Auch wenn jemand beispielsweise bereits {event.distance} Kilometer geschafft hat und noch weiterläuft, werden zusätzliche vollständig absolvierte Runden ebenfalls berücksichtigt. Eine nur teilweise absolvierte Runde am Ende der Eventzeit zählt hingegen nicht.</p>
+          </>,
+        },
         { question: "Wie finde ich den richtigen Streckenverlauf?", answer: <p>{eventInfo.markings}</p> },
         { question: "Gibt es öffentliche Toiletten?", answer: <p>{eventInfo.toilets}</p> },
       ],
