@@ -119,6 +119,10 @@ export function Footer() {
           <Link href={registrationHref}>Anmeldung ↗</Link>
         </nav>
       </div>
+      <div className="footer-legal">
+        <span>Rechtliches</span>
+        <Link href="/teilnahmebedingungen">Teilnahmebedingungen &amp; Haftungshinweise</Link>
+      </div>
       <div className="footer-bottom">
         <span>
           © {new Date().getFullYear()} {event.name}
