@@ -1,7 +1,7 @@
-import { Button } from "@/components/shared";
+import { Button, MapLink } from "@/components/shared";
 import RegistrationEmbed from "@/components/RegistrationEmbed";
 import { registration } from "@/config/registration";
-import { event } from "@/config/event";
+import { event, schedule, location, eventInfo } from "@/config/event";
 import { pageMetadata } from "@/config/seo";
 export const metadata = pageMetadata({
   title: "Anmeldung – Sei dabei",
@@ -9,7 +9,7 @@ export const metadata = pageMetadata({
   path: "/anmeldung",
 });
 export default function Registration() {
-  const ready = Boolean(registration.registrationUrl);
+  const ready = registration.enabled && Boolean(registration.registrationUrl);
   return (
     <>
       <section className="page-intro wrap">
@@ -34,8 +34,18 @@ export default function Registration() {
               <dd>{event.dateLong}</dd>
             </div>
             <div>
+              <dt>Start</dt>
+              <dd>{schedule.start}</dd>
+            </div>
+            <div>
+              <dt>Eintreffen und Startnummernausgabe</dt>
+              <dd>Ab {schedule.arrival}</dd>
+            </div>
+            <div>
               <dt>Wo</dt>
-              <dd>{event.location}</dd>
+              <dd>{location.start.address}<br />{location.start.orientation}.<br />
+                <MapLink href={location.start.mapsUrl}>Startpunkt in Google Maps öffnen</MapLink>
+              </dd>
             </div>
             <div>
               <dt>Die Challenge</dt>
@@ -52,10 +62,8 @@ export default function Registration() {
               <dd>{event.bestTime} Stunden</dd>
             </div>
           </dl>
-          <p className="muted">
-            Alle bestätigten Eckdaten auf einen Blick. Weitere Angaben zum
-            Ablauf stehen direkt im Anmeldeformular.
-          </p>
+          <p className="muted">{eventInfo.participation}</p>
+          <Button href="/faq">Alle FAQs ansehen</Button>
         </aside>
         <div className="registration-panel" id="anmeldebereich">
           <span className="status">

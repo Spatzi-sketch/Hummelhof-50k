@@ -1,9 +1,9 @@
 # Hummelhof 50K
 
 Deutschsprachige Website für die **50 Loop Hummelhof Challenge** am **5. Dezember 2026**.
-Drei eigene Seiten, kein Backend, keine Datenbank, kein eigenes Tracking. Das
+Vier eigene Seiten, kein Backend, keine Datenbank, kein eigenes Tracking. Das
 bereitgestellte Eventlogo ist als Logo **und** als Favicon eingebunden. Das
-Anmeldeformular von Brevo wird erst nach ausdrücklicher Zustimmung geladen.
+Anmeldeformular von Brevo ist eingebunden und wird erst nach ausdrücklicher Zustimmung geladen.
 
 Das Projekt ist so vorbereitet, dass es direkt mit Vercel verbunden und
 veröffentlicht werden kann. Falls die Seite nach dem Deploy nicht erscheint:
@@ -18,12 +18,13 @@ Schritt-für-Schritt-Anleitung.
 | --- | --- |
 | `/` | Home: Einstieg, Eventdaten, Challenge, Community, Bildbereiche, Geschichte, Anmeldung |
 | `/about-us` | Ausführliche Entstehungsgeschichte, Community-Gedanke, Erklärung der Challenge |
+| `/faq` | Häufige Fragen zu Ablauf, Anreise, Strecke und Versorgung |
 | `/anmeldung` | Eventinfos und eingebettetes Anmeldeformular (erst nach Zustimmung) |
 | `/does-not-exist` | Eigene 404-Seite |
 
 **Technik:** Next.js 16 (App Router), React 19, TypeScript, responsives CSS ohne
 Framework. Manrope und DM Sans werden lokal über npm ausgeliefert, also ohne
-Google-Fonts-Anfrage im Browser. Alle drei Seiten werden beim Build statisch
+Google-Fonts-Anfrage im Browser. Alle vier Seiten werden beim Build statisch
 vorgerendert. JavaScript im Browser brauchen die mobile Navigation, der
 Zustimmungshinweis und das Laden des Formulars. `next/image` sorgt für
 responsive, optimierte Bilder. Es sind keinerlei API-Schlüssel oder
@@ -47,6 +48,7 @@ Hummelhof-50k/
 │   │   ├── layout.tsx         Gemeinsames Layout, Standard-Metadaten, Favicons
 │   │   ├── page.tsx           Home
 │   │   ├── about-us/page.tsx  About Us
+│   │   ├── faq/page.tsx       FAQ
 │   │   ├── anmeldung/page.tsx Anmeldung
 │   │   ├── not-found.tsx      404-Seite
 │   │   ├── globals.css        Alle Styles, Farben und Breakpoints
@@ -62,7 +64,7 @@ Hummelhof-50k/
 │   │   └── shared.tsx         Buttons, Fotos, Fakten, Footer, Runden-Grafik
 │   ├── config/
 │   │   ├── consent.ts         ALLE Texte des Zustimmungshinweises
-│   │   ├── event.ts           Datum, Ort, Distanzen, Bestzeit, Wochentag
+│   │   ├── event.ts           Datum, Zeiten, Orte, Anreise, Versorgung und Eventfakten
 │   │   ├── images.ts          ALLE Bildpfade, Alt-Texte, Ausschnitte
 │   │   ├── registration.ts    Anmelde-URL, Modus, Anbieter, iframe-Höhe
 │   │   ├── site.ts            Domain für Metadaten/Sitemap (auf Vercel automatisch)
@@ -132,7 +134,7 @@ Die aktuellen Favicons sind aus dem gelieferten Logo verkleinert und optimiert.
 
 ## 4. Texte und Eventinformationen ändern
 
-- **Eventname und Fakten (Datum, Ort, 50 km, 50 Runden, 1 km, 5:36 h):**
+- **Eventname und Fakten (Datum, Zeiten, Standorte, Anreise, Versorgung, Distanzen und Bestzeit):**
   `src/config/event.ts`. Diese Werte erscheinen automatisch auf allen Seiten –
   auch in Seitentiteln, Header-Unterzeile, Hero, Footer und Sitemap. Der Name
   lautet aktuell **50 Loop Hummelhof Challenge**, Kurzform **Hummelhof 50K**.
@@ -143,19 +145,19 @@ Die aktuellen Favicons sind aus dem gelieferten Logo verkleinert und optimiert.
   `src/components/Header.tsx` und `src/components/shared.tsx`.
 - **Farben, Abstände, Schriftgrößen:** `src/app/globals.css`; die Farbtöne
   stehen ganz oben unter `:root`.
-- **Seitentitel und Beschreibungen:** in den drei Seitendateien bei
+- **Seitentitel und Beschreibungen:** in den vier Seitendateien bei
   `pageMetadata({ ... })`. Der gemeinsame Aufbau steht in `src/config/seo.ts`.
 
 ---
 
 ## 5. Anmeldeformular anpassen
 
-**Das Formular ist eingebunden.** Es liegt als iframe auf `/anmeldung` und
-stammt von **Brevo (Sendinblue)**. Alle Einstellungen stehen ausschließlich in
+**Das Formular ist eingebunden.** Es liegt als iframe auf `/anmeldung` und stammt von **Brevo (Sendinblue)**. Alle Einstellungen stehen ausschließlich in
 `src/config/registration.ts`:
 
 | Feld | Aktueller Wert / Wirkung |
 | --- | --- |
+| `enabled: true` | Die vorhandene Anmeldung ist aktiv. Mit `false` wird sie bei Bedarf deaktiviert. |
 | `registrationUrl` | Die gelieferte `https://…sibforms.com/serve/…`-Adresse. Nur hier ändern, wenn ein neues Formular kommt. |
 | `mode: "embed"` | Formular erscheint auf `/anmeldung` – **erst nach Zustimmung** im Hinweis (siehe Kapitel 6). Alle Anmelde-Buttons führen zur Anmeldeseite. |
 | `mode: "link"` | Stattdessen öffnen **alle** Anmelde-Buttons das Formular direkt beim Anbieter. Ein Wort ändern, sonst nichts. |
@@ -261,9 +263,9 @@ npm start            # Produktionsserver
 npm test             # gegen laufenden Server, TEST_URL überschreibbar
 ```
 
-`npm test` prüft alle drei Seiten, genau ein H1 pro Seite, deutsche Sprache,
+`npm test` prüft alle vier Seiten, genau ein H1 pro Seite, deutsche Sprache,
 Meta-Beschreibung, Canonical, Open Graph, interne Links, alle Bild-/Icon- und
-Skriptressourcen, die echte Anmelde-URL aus `registration.ts`, dass ohne
+Skriptressourcen, den konfigurierten Anmeldestatus aus `registration.ts`, dass ohne
 Zustimmung **kein** iframe ausgeliefert wird, den Footer-Link zum Ändern der
 Auswahl, `robots.txt`, `sitemap.xml` und die 404-Seite.
 
@@ -272,15 +274,12 @@ Auswahl, `robots.txt`, `sitemap.xml` und die 404-Seite.
 ## 9. Was aktuell Platzhalter bzw. offen ist
 
 - **Impressum, Datenschutzerklärung, Veranstalter- und Kontaktangaben** sowie
-  die genaue Startzeit wurden für diese Website nicht geliefert und nicht
-  erfunden. Vor dem öffentlichen Start prüfen, welche rechtlichen Angaben
+  wurden für diese Website nicht geliefert und nicht erfunden. Vor dem öffentlichen Start prüfen, welche rechtlichen Angaben
   erforderlich sind – ein Zustimmungshinweis ersetzt sie nicht.
 - **Das Brevo-Formular** wird von einem Drittanbieter betrieben; dessen eigene
   Datenschutzhinweise, Einwilligung im Formular und die Standard-Hilfetexte
   liegen außerhalb dieses Projekts (siehe Kapitel 5).
-- Auf dieser Website selbst stehen keine erfundenen Sponsoren, Startgebühren,
-  Preise, Partner, Social-Accounts oder Verpflegungsstationen; zusätzliche
-  Angaben stehen ausschließlich im Formular und stammen von dir.
+- Die Eventinformationen stehen in `src/config/event.ts`.
 - Die Social-Media-Vorschau verwendet derzeit das Eventlogo als Bild.
 
 ---
@@ -288,7 +287,7 @@ Auswahl, `robots.txt`, `sitemap.xml` und die 404-Seite.
 ## 10. Qualitätsstand
 
 Produktionsbuild, TypeScript und HTTP-Tests sind erfolgreich; alle acht Fotos
-werden auf Einbindung und Erreichbarkeit geprüft. Zusätzlich wurden alle drei
+werden auf Einbindung und Erreichbarkeit geprüft. Vor der Erweiterung wurden drei
 Seiten im echten Browser bei **375, 768, 1440 und 1920 px** geprüft: keine
 horizontalen Scrollbalken, keine überstehenden Elemente, alle Bilder geladen,
 keine Konsolenfehler. Separat getestet: Hinweis erscheint nur ohne Auswahl,
