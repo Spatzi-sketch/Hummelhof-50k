@@ -7,6 +7,7 @@ import CookieConsent from "@/components/CookieConsent";
 import { Footer } from "@/components/shared";
 import { event } from "@/config/event";
 import { siteUrl } from "@/config/site";
+import { Analytics } from "@vercel/analytics/react";
 export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: {
@@ -49,6 +50,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <CookieConsent />
+        <Analytics />
       </body>
     </html>
   );
