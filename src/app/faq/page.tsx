@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button, Invite, MapLink } from "@/components/shared";
 import { event, eventInfo, location, schedule } from "@/config/event";
 import { pageMetadata } from "@/config/seo";
@@ -18,6 +19,7 @@ export default function FAQ() {
         { question: "Wie viele Kilometer werden gelaufen?", answer: <p>Die gesamte Challenge umfasst {event.distance} Kilometer: {event.loops} Runden zu jeweils {event.loopKm} Kilometer.</p> },
         { question: `Muss ich alle ${event.distance} Kilometer laufen?`, answer: <p>Die Challenge ist auf {event.distance} Kilometer ausgelegt. Im Mittelpunkt steht aber ein gemeinsamer Lauftag: Niemand muss die gesamte Distanz absolvieren, um teilzunehmen, und niemand soll sich unter Leistungsdruck gesetzt fühlen.</p> },
         { question: "Ist die Teilnahme kostenlos?", answer: <p>{eventInfo.participation}</p> },
+        { question: "Wer ist für die eigene Sicherheit während des Laufs verantwortlich?", answer: <p>Die Teilnahme erfolgt eigenverantwortlich. Jeder Teilnehmer ist selbst dafür verantwortlich, seine gesundheitliche Eignung einzuschätzen, auf die eigenen Leistungsgrenzen zu achten und sich während des Laufs rücksichtsvoll zu verhalten. Die vollständigen Teilnahmebedingungen und Haftungshinweise findest du <Link className="inline-link" href="/teilnahmebedingungen">hier</Link>.</p> },
       ],
     },
     {

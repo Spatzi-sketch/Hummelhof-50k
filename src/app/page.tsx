@@ -30,8 +30,8 @@ export default function Home() {
           </div>
           <div className="hero-copy">
             <p>
-              Eine Runde am Hummelhof. Eine sportliche Herausforderung. Und
-              Menschen, die lieber gemeinsam laufen.
+              Aus einem persönlichen Lauf über {event.distance} Kilometer ist eine
+              Einladung an die Laufcommunity geworden. Am {event.dateLong.replace(/\s+\d{4}$/, "")} kommen wir im Hummelhofwald zusammen, laufen gemeinsam Runde für Runde und nehmen die {event.distance} Kilometer als Herausforderung an. Ob du versuchst, die {event.bestTimeLong} zu unterbieten oder einfach dabei sein möchtest: Im Mittelpunkt stehen die Freude am Laufen und das Miteinander.
             </p>
             <p className="muted">
               Schlag die {event.bestTime} Stunden. Oder komm einfach wegen der

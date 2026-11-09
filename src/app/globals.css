@@ -1338,3 +1338,29 @@ body:has(.consent) {
   .faq-outro { padding-bottom: 45px; }
   .footer nav { flex-wrap: wrap; gap: 4px 20px; }
 }
+
+/* Dezente rechtliche Hinweise im bestehenden Seitenraster. */
+.inline-link {
+  color: var(--forest);
+  text-decoration: underline;
+  text-decoration-color: var(--olive);
+  text-underline-offset: 3px;
+}
+.inline-link:hover { color: var(--olive); }
+.footer-legal {
+  border-top: 1px solid var(--line);
+  padding-block: 19px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  font-size: 11px;
+}
+.footer-legal span { color: var(--muted); }
+.footer-legal a:hover { color: var(--olive); }
+.legal-intro h1 { overflow-wrap: anywhere; }
+.legal-content { padding-bottom: 90px; }
+.legal-content h2 { font-size: clamp(30px, 3vw, 38px); }
+.legal-content .prose { max-width: 780px; }
+@media (max-width: 700px) {
+  .legal-content { padding-bottom: 55px; }
+}

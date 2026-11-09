@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button, MapLink } from "@/components/shared";
 import RegistrationEmbed from "@/components/RegistrationEmbed";
 import { registration } from "@/config/registration";
@@ -82,6 +83,10 @@ export default function Registration() {
             {ready
               ? `Melde dich hier für den gemeinsamen Lauftag an. Das Formular wird von ${registration.provider} bereitgestellt und erst nach deiner Zustimmung geladen.`
               : `Hier entsteht die Anmeldung für die ${event.name}. Sobald das Formular bereit ist, findest du es an dieser Stelle.`}
+          </p>
+          <p>
+            Bitte lies vor deiner Teilnahme unsere{" "}
+            <Link className="inline-link" href="/teilnahmebedingungen">Teilnahmebedingungen und Haftungshinweise</Link>.
           </p>
           {ready ? (
             registration.mode === "embed" ? (
