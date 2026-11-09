@@ -82,6 +82,10 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
     assert.ok(html.includes("SAMSTAG"), "Wochentag im Hero");
     const heroCopy = main.match(/<div class="hero-copy"><p>([\s\S]*?)<\/p>/)?.[1].replaceAll("<!-- -->", "");
     assert.equal(heroCopy, "Ich bin 50 Kilometer im Hummelhofwald in 5:36 Stunden gelaufen. Am 5. Dezember machen wir daraus eine gemeinsame Challenge für die Laufcommunity.", "Einleitungstext exakt");
+    assert.equal((main.match(/class="loop-graphic animated-loop"/g) || []).length, 1, "Eine animierte Streckengrafik auf der Startseite");
+    assert.match(main, /class="animated-loop-track"/, "Unregelmäßige Streckenform vorhanden");
+    assert.match(main, /START \/ ZIEL/, "Start und Ziel gekennzeichnet");
+    assert.ok(main.includes("5 Stunden und 36 Minuten"), "Eventdauer in der Grafik");
   }
   assert.ok(html.includes('href="/faq"'), `FAQ-Navigation: ${route}`);
   if (["/", "/faq", "/anmeldung"].includes(route)) {
@@ -89,6 +93,10 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
     assert.ok(html.includes("08:15 Uhr"), `Startnummernausgabe: ${route}`);
     assert.ok(html.includes("48.275215%2C14.294004"), `Startpunkt-Koordinaten: ${route}`);
     assert.ok(html.includes("Pizzeria Tuana"), `Orientierung: ${route}`);
+  }
+  if (route === "/about-us") {
+    assert.ok(main.includes('class="loop-graphic"'), "Bestehende Grafik auf About Us bleibt erhalten");
+    assert.ok(!main.includes('class="loop-graphic animated-loop"'), "Keine zusätzliche Streckenanimation auf About Us");
   }
   if (route === "/faq") {
     for (const text of ["Allgemeine Informationen", "Startort und Anreise", "Strecke und Orientierung", "Verpflegung und Versorgung", "Medaillen und Teilnahme", "Hatschekstraße", "41 und 43", "100 Meter", "gelben Bändern", "WC-Anlage", "Stromanschluss", "Wasserquelle", "Iso-Drink", "Riegeln", "Kuchen", "Bananen", "Medaille", "unabhängig davon", "kostenlos", "freiwillig"]) {

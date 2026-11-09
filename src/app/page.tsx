@@ -1,4 +1,5 @@
-import { Button, Facts, Photo, Invite, LoopGraphic, MapLink } from "@/components/shared";
+import { Button, Facts, Photo, Invite, MapLink } from "@/components/shared";
+import AnimatedLoopGraphic from "@/components/AnimatedLoopGraphic";
 import { images } from "@/config/images";
 import { event, schedule, location, eventInfo } from "@/config/event";
 import { registrationHref } from "@/config/registration";
@@ -132,7 +133,7 @@ export default function Home() {
             Die Geschichte hinter den 50K <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <LoopGraphic />
+        <AnimatedLoopGraphic />
       </section>
       <section className="community-section">
         <div className="wrap split">
