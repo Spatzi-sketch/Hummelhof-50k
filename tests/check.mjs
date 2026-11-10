@@ -31,6 +31,7 @@ const targets = new Set([
   "/faq",
   "/anmeldung",
   "/teilnahmebedingungen",
+  "/impressum",
   "/icon.png",
   "/apple-icon.png",
   "/favicon.ico",
@@ -40,7 +41,7 @@ const targets = new Set([
 ]);
 
 let allHtml = "";
-for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingungen"]) {
+for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingungen", "/impressum"]) {
   const response = await fetch(base + route);
   assert.equal(response.status, 200, `Seite: ${route}`);
   const html = await response.text();
@@ -52,7 +53,8 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
   assert.match(nav, /href="\/"[\s\S]*href="\/about-us"[\s\S]*href="\/faq"[\s\S]*href="\/anmeldung"/, `Reihenfolge der Navigation: ${route}`);
   assert.match(rendered, /aria-label="Footernavigation"[\s\S]*href="\/faq"/, `FAQ im Footer: ${route}`);
   assert.match(rendered, /class="footer-legal"[\s\S]*Rechtliches[\s\S]*href="\/teilnahmebedingungen"/, `Rechtliches im Footer: ${route}`);
-  assert.ok(!nav.includes("/teilnahmebedingungen"), `Keine rechtliche Seite in Hauptnavigation: ${route}`);
+  assert.match(rendered, /class="footer-legal"[\s\S]*Rechtliches[\s\S]*href="\/impressum"[\s\S]*href="\/teilnahmebedingungen"/, `Impressum im Footer vor Teilnahmebedingungen: ${route}`);
+  assert.ok(!nav.includes("/teilnahmebedingungen") && !nav.includes("/impressum"), `Keine rechtliche Seite in Hauptnavigation: ${route}`);
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1, `Ein H1: ${route}`);
   assert.ok(html.includes('lang="de"'), `Sprache: ${route}`);
   assert.ok(html.includes('name="description"'), `Beschreibung: ${route}`);
@@ -124,6 +126,11 @@ for (const route of ["/", "/about-us", "/faq", "/anmeldung", "/teilnahmebedingun
       assert.ok(!html.includes(formUrl), "Deaktiviertes Formular wird nicht verlinkt");
     }
   }
+  if (route === "/impressum") {
+    for (const text of ["<h1>Impressum</h1>", "Veranstalter und Betreiber dieser Website", "Trailabenteuer für Outdoor und Natursport", "Bahrgasse 13<br/>4020 Linz<br/>Österreich", "Trailabenteuer für Outdoor und Natursport ist Veranstalter der Hummelhof 50K und verantwortlich für die Bereitstellung der Informationen auf dieser Website."]) {
+      assert.ok(main.includes(text), `Impressum enthält ${text}`);
+    }
+  }
   if (route === "/teilnahmebedingungen") {
     for (const text of ["<h2>Haftung und Eigenverantwortung</h2>", "eigene Verantwortung und eigenes Risiko", "äußere Einflüsse", "Überlastungserscheinungen", "nicht gesperrt", "Gesetzlich zwingende Haftungsansprüche", "bei Personenschäden, bleiben davon unberührt."]) {
       assert.ok(main.includes(text), `Haftungshinweis enthält ${text}`);
@@ -147,7 +154,7 @@ console.log(`PASS ${targets.size} interne Seiten, Links und Ressourcen`);
 const robots = await (await fetch(base + "/robots.txt")).text();
 assert.ok(robots.includes("Sitemap:"), "Sitemap in robots.txt");
 const sitemap = await (await fetch(base + "/sitemap.xml")).text();
-for (const path of ["/about-us", "/faq", "/anmeldung", "/teilnahmebedingungen"]) {
+for (const path of ["/about-us", "/faq", "/anmeldung", "/teilnahmebedingungen", "/impressum"]) {
   assert.ok(sitemap.includes(path), `Sitemap enthält ${path}`);
 }
 console.log("PASS robots.txt und sitemap.xml");
