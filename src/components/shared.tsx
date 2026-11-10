@@ -121,6 +121,7 @@ export function Footer() {
       </div>
       <div className="footer-legal">
         <span>Rechtliches</span>
+        <Link href="/impressum">Impressum</Link>
         <Link href="/teilnahmebedingungen">Teilnahmebedingungen &amp; Haftungshinweise</Link>
       </div>
       <div className="footer-bottom">
